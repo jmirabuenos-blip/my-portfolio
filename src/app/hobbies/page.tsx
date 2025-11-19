@@ -22,7 +22,7 @@ const hobbiesData: Hobby[] = [
     desc: "I enjoy learning new chords and expressing myself through music.",
     emojis: ["🎸", "🎶", "🎵"],
     videos: [
-      { src: "/myvid.mp4", note: "Here's a short clip of me playing guitar 🎸 — just a little showcase of my hobby!" },
+      { src: "https://i.imgur.com/rVJMmH7.mp4", note: "Here's a short clip of me playing guitar 🎸" },
     ],
   },
   {
@@ -31,8 +31,8 @@ const hobbiesData: Hobby[] = [
     desc: "I like playing basketball casually for fun, exercise, and bonding with friends.",
     emojis: ["🏀", "💪", "🏆"],
     videos: [
-      { src: "/bball1.mp4", note: "Watch me making some shots 🏀 — having fun on the court!" },
-      { src: "/bball2.mp4", note: "Another clip of me playing basketball — teamwork and action!" },
+      { src: "https://i.imgur.com/GOQ75FY.mp4", note: "Making some shots 🏀 — action on the court!" },
+      { src: "https://i.imgur.com/dwuMlJS.mp4", note: "Another basketball clip 🏀🔥" },
     ],
   },
   {
@@ -41,12 +41,10 @@ const hobbiesData: Hobby[] = [
     desc: "I love going outdoors, exploring nature, and enjoying peaceful hikes.",
     emojis: ["🥾", "🌲", "🌄"],
     images: [
-      { src: "/1.jpg", caption: "Starting the trail 🌲" },
-      { src: "/2.jpg", caption: "Beautiful view 🌄" },
-      { src: "/3.jpg", caption: "Taking a break 🥾" },
-      { src: "/4.jpg", caption: "Summit reached! ⛰️" },
-      { src: "/5.jpg", caption: "Sunset hike 🌅" },
-      { src: "/yo.jpg", caption: "I'm at the falls 🌊" },
+      { src: "https://i.imgur.com/YgJYywb.jpg", caption: "Starting the trail 🌲" },
+      { src: "https://i.imgur.com/yyY8UfS.jpg", caption: "Beautiful view 🌄" },
+      { src: "https://i.imgur.com/YRbUXNT.jpg", caption: "Taking a break 🥾" },
+      { src: "https://i.imgur.com/p9Yyg60.jpg", caption: "Summit reached! ⛰️" },
     ],
   },
   {
@@ -55,7 +53,7 @@ const hobbiesData: Hobby[] = [
     desc: "I enjoy learning, exploring, and trying new experiences.",
     emojis: ["🧭", "🔍", "💡"],
     images: [
-      { src: "/yo.jpg", caption: "Love to explore new places!" },
+      { src: "https://i.imgur.com/YG4QvvS.jpg", caption: "Love to explore new places!" },
     ],
   },
 ];
@@ -68,7 +66,6 @@ export default function Hobbies() {
   const [stars, setStars] = useState<DynamicElement[]>([]);
   const [orbs, setOrbs] = useState<DynamicElement[]>([]);
 
-  // Video/Image popup state
   const [mediaState, setMediaState] = useState<{
     visible: boolean;
     hobbyIdx?: number;
@@ -78,7 +75,6 @@ export default function Hobbies() {
     isImage?: boolean;
   }>({ visible: false });
 
-  // --- Helpers ---
   const generateStars = (count: number) =>
     Array.from({ length: count }, (_, i) => ({
       id: i,
@@ -244,15 +240,11 @@ export default function Hobbies() {
           {mediaState.visible && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setMediaState({ visible: false })}>
               <div className="relative bg-gray-900 rounded-xl shadow-2xl flex items-center p-6 max-w-4xl w-full transition-all" onClick={(e) => e.stopPropagation()}>
-
-                {/* Note on left */}
                 {mediaState.note && (
                   <div className="flex-1 text-white text-left text-lg pr-6 flex items-center">
                     {mediaState.note}
                   </div>
                 )}
-
-                {/* Video or Image on right */}
                 {mediaState.src && (
                   <div className="relative flex items-center transition-all duration-500">
                     {mediaState.isImage ? (
@@ -260,40 +252,21 @@ export default function Hobbies() {
                     ) : (
                       <video src={mediaState.src} controls autoPlay className="w-[320px] rounded-lg shadow-lg" />
                     )}
-
-                    {/* Prev Button */}
                     {mediaState.hobbyIdx !== undefined && (
                       <>
                         {((mediaState.isImage && hobbiesData[mediaState.hobbyIdx].images && hobbiesData[mediaState.hobbyIdx].images!.length > 1) ||
-                         (!mediaState.isImage && hobbiesData[mediaState.hobbyIdx].videos && hobbiesData[mediaState.hobbyIdx].videos!.length > 1)) && (
-                          <button
-                            className="absolute left-[-40px] top-1/2 -translate-y-1/2 text-white px-3 py-2 bg-blue-600/70 rounded hover:bg-blue-500"
-                            onClick={handlePrevMedia}
-                          >
-                            ◀
-                          </button>
+                        (!mediaState.isImage && hobbiesData[mediaState.hobbyIdx].videos && hobbiesData[mediaState.hobbyIdx].videos!.length > 1)) && (
+                          <button className="absolute left-[-40px] top-1/2 -translate-y-1/2 text-white px-3 py-2 bg-blue-600/70 rounded hover:bg-blue-500" onClick={handlePrevMedia}>◀</button>
                         )}
-
-                        {/* Next Button */}
                         {((mediaState.isImage && hobbiesData[mediaState.hobbyIdx].images && hobbiesData[mediaState.hobbyIdx].images!.length > 1) ||
-                         (!mediaState.isImage && hobbiesData[mediaState.hobbyIdx].videos && hobbiesData[mediaState.hobbyIdx].videos!.length > 1)) && (
-                          <button
-                            className="absolute right-[-40px] top-1/2 -translate-y-1/2 text-white px-3 py-2 bg-blue-600/70 rounded hover:bg-blue-500"
-                            onClick={handleNextMedia}
-                          >
-                            ▶
-                          </button>
+                        (!mediaState.isImage && hobbiesData[mediaState.hobbyIdx].videos && hobbiesData[mediaState.hobbyIdx].videos!.length > 1)) && (
+                          <button className="absolute right-[-40px] top-1/2 -translate-y-1/2 text-white px-3 py-2 bg-blue-600/70 rounded hover:bg-blue-500" onClick={handleNextMedia}>▶</button>
                         )}
                       </>
                     )}
                   </div>
                 )}
-
-                {/* Close Button */}
-                <button className="absolute top-2 right-2 text-white text-2xl p-2 hover:text-blue-400" onClick={() => setMediaState({ visible: false })}>
-                  <X />
-                </button>
-
+                <button className="absolute top-2 right-2 text-white text-2xl p-2 hover:text-blue-400" onClick={() => setMediaState({ visible: false })}><X /></button>
               </div>
             </div>
           )}
