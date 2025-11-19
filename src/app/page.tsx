@@ -158,11 +158,11 @@ const HomeView: React.FC<HomeProps> = ({ navigateTo, stars, orbs, isMounted }) =
 
   // Handles the "View Projects" button click
   const handleViewProjects = () => {
-    // Show the message, no auto-timeout now
+    // Show the message
     setShowProjectMessage(true);
   };
 
-  // NEW: Handler to manually close the message
+  // Handler to manually close the message
   const handleCloseProjectMessage = () => {
     setShowProjectMessage(false);
   };
@@ -179,7 +179,7 @@ const HomeView: React.FC<HomeProps> = ({ navigateTo, stars, orbs, isMounted }) =
       >
         <div className={`bg-gray-900/95 border border-blue-600/50 rounded-xl p-8 shadow-2xl animate-message-fade max-w-lg w-full text-center relative ${showProjectMessage ? 'scale-100' : 'scale-90'}`}>
           
-          {/* NEW Close Button using the X icon */}
+          {/* Close Button using the X icon */}
           <button
             onClick={handleCloseProjectMessage}
             className="absolute top-3 right-3 p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
@@ -238,9 +238,9 @@ const HomeView: React.FC<HomeProps> = ({ navigateTo, stars, orbs, isMounted }) =
           onMouseEnter={() => setIsImageFaded(true)}
           onMouseLeave={() => setIsImageFaded(false)}
         >
-          {/* *** CORRECTED: USING THE NEW FILE NAME DIRECTLY *** */}
+          {/* *** UPDATED: Using the provided Imgur URL for the profile picture *** */}
           <img
-            src="/jaymer.jpg" 
+            src="https://i.imgur.com/Y9RkFD3.jpeg" 
             alt="Jaymer's Profile Picture"
             className="absolute inset-0 w-full h-full object-cover object-center scale-110 transition-transform duration-700"
           />

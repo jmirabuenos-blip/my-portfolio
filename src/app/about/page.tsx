@@ -51,11 +51,6 @@ interface DynamicElement {
   style: React.CSSProperties;
 }
 
-// Utility function (placeholder for image URL handling)
-const getImageUrl = (path: string) => {
-  return path;
-};
-
 // Function to generate deterministic style properties for stars
 const generateStars = (count: number): DynamicElement[] => 
   Array.from({ length: count }, (_, i) => ({
@@ -155,10 +150,10 @@ export default function About() {
 
       <div className="relative min-h-screen font-sans">
         
-        {/* Local Background Gradient (RESTORED) */}
+        {/* Local Background Gradient */}
         <div className="fixed inset-0 bg-gradient-to-b from-gray-950 to-blue-950/70 z-0"></div>
         
-        {/* RENDER THE DYNAMIC BACKGROUND ELEMENTS (RESTORED) */}
+        {/* RENDER THE DYNAMIC BACKGROUND ELEMENTS */}
         {BackgroundElements}
         
         {/* Main content section, now lifted above the background elements (z-10) */}
@@ -167,17 +162,17 @@ export default function About() {
           {/* Left Content Column */}
           <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left gap-6 z-10">
             
-            {/* Stage 1: Preamble (FADE-IN ADDED) */}
+            {/* Stage 1: Preamble (FADE-IN) */}
             <p className={`text-blue-400 text-xl md:text-2xl font-semibold transition-opacity duration-700 ${showPreamble ? "opacity-100" : "opacity-0"}`}>
               About Me
             </p>
             
-            {/* Stage 2: Title (FADE-IN ADDED) */}
+            {/* Stage 2: Title (FADE-IN) */}
             <h1 className={`text-4xl md:text-6xl font-extrabold text-white leading-tight hover:underline hover:decoration-blue-400 decoration-2 transition-opacity duration-700 ${showTitle ? "opacity-100" : "opacity-0"}`}>
               Hi, I'm Jaymer Mirabuenos
             </h1>
             
-            {/* Stage 3: Paragraph (FADE-IN ADDED) */}
+            {/* Stage 3: Paragraph (FADE-IN) */}
             <p className={`text-gray-300 max-w-md text-base md:text-lg transition-opacity duration-700 ${showParagraph ? "opacity-100" : "opacity-0"}`}>
               Beginner frontend developer and IT student at Naga College Foundation. I love experimenting
               with React, Next.js, Tailwind CSS, and building interactive UI/UX projects.
@@ -193,13 +188,14 @@ export default function About() {
               onMouseEnter={() => setIsImageFaded(true)}
               onMouseLeave={() => setIsImageFaded(false)}
             >
+              {/* *** UPDATED: Using the provided Imgur URL *** */}
               <img
-                src={getImageUrl("/jaymer.jpg")} 
-                alt="Mer" 
-                // Placeholder image for demonstration purposes if the original fails
+                src="https://i.imgur.com/Y9RkFD3.jpeg" 
+                alt="Jaymer Mirabuenos" 
+                // Fallback to a placeholder if the image fails to load
                 onError={(e) => {
                   e.currentTarget.onerror = null; 
-                  e.currentTarget.src = "https://placehold.co/400x400/1e3a8a/ffffff?text=Mer";
+                  e.currentTarget.src = "https://placehold.co/400x400/1e3a8a/ffffff?text=Profile+Pic";
                 }}
                 className="w-full h-full object-cover object-center" 
               />
