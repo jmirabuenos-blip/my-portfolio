@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, JSX } from "react";
 import { Guitar, Target, MountainSnow, Compass, X } from "lucide-react";
 
 type EmojiDrop = { id: number; emoji: string; top: number; left: number; size: number; duration: number };
@@ -276,4 +276,3 @@ export default function Hobbies() {
     </>
   );
 }
-  
