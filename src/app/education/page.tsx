@@ -1,39 +1,62 @@
 "use client";
-import { useState, useEffect } from "react";
-import { Book, GraduationCap, School, Star } from "lucide-react";
 
-// --- CUSTOM CSS STYLES FOR ANIMATION (U+00A0 replaced with standard spaces) ---
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { Book, GraduationCap, School, Star, Zap, ChevronRight } from "lucide-react";
+
+// --- 1. TYPE DEFINITIONS ---
+
+/**
+ * Defines the structure for the dynamic background elements (stars and orbs).
+ */
+interface DynamicElement {
+  id: number;
+  style: React.CSSProperties;
+}
+
+/**
+ * Defines the structure for an education timeline item.
+ */
+interface EducationItem {
+  label: string;
+  value: string;
+  icon: React.ReactElement;
+  color: string; // Define color for card accents
+}
+
+// --- 2. CONSTANTS AND DATA ---
+
+const EDUCATION_ITEMS: EducationItem[] = [
+  { label: "Elementary Education", value: "Panicuason Elementary School (Focus on Foundational Skills)", icon: <School className="w-6 h-6" />, color: "text-yellow-400" },
+  { label: "Secondary Education", value: "Carolina National High School (NC II Certificate Holder, TESDA Passed)", icon: <GraduationCap className="w-6 h-6" />, color: "text-blue-400" },
+  { label: "Higher Education (Current)", value: "IT Student at Naga College Foundation (Focus on Software Development)", icon: <Book className="w-6 h-6" />, color: "text-green-400" },
+];
+
+const EDUCATION_ACHIEVEMENTS: string[] = [
+  "NC II Certified (Technical Skills)",
+  "TESDA Examination Passed",
+  "Frontend Development (Beginner)",
+  "Continuous Learning Mindset",
+  "Visionary Goal Setting",
+];
+
+// Sequential fade-in timing (in milliseconds)
+const FADE_IN_DELAY_MS = 300;
+
+// --- 3. CUSTOM CSS AND KEYFRAMES (Necessary for animation) ---
+
 const customStyles = `
 /* Keyframes for Stars/Particles */
 @keyframes float {
-  0% {
-    transform: translateY(0px) translateX(0px);
-    opacity: 0.7;
-  }
-  50% {
-    transform: translateY(-20px) translateX(10px);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(0px) translateX(0px);
-    opacity: 0.7;
-  }
+  0% { transform: translateY(0px) translateX(0px); opacity: 0.7; }
+  50% { transform: translateY(-20px) translateX(10px); opacity: 1; }
+  100% { transform: translateY(0px) translateX(0px); opacity: 0.7; }
 }
 
 /* Keyframes for Orbs/Nebula Glow */
 @keyframes float-slow {
-  0% {
-    transform: translateY(0px) translateX(0px);
-    opacity: 0.2; 
-  }
-  50% {
-    transform: translateY(-50px) translateX(20px);
-    opacity: 0.4;
-  }
-  100% {
-    transform: translateY(0px) translateX(0px);
-    opacity: 0.2;
-  }
+  0% { transform: translateY(0px) translateX(0px); opacity: 0.2; }
+  50% { transform: translateY(-50px) translateX(20px); opacity: 0.4; }
+  100% { transform: translateY(0px) translateX(0px); opacity: 0.2; }
 }
 
 /* Apply animations using standard class names */
@@ -46,27 +69,8 @@ const customStyles = `
 }
 `;
 
-// Define types for dynamic elements
-interface DynamicElement {
-  id: number;
-  style: React.CSSProperties;
-}
+// --- 4. BACKGROUND GENERATION HELPERS ---
 
-const educationItems = [
-  { label: "Elementary", value: "Panicuason Elementary School", icon: <School className="w-10 h-10 text-yellow-400" /> },
-  { label: "High School", value: "Carolina National High School (NC II Certificate Holder, TESDA Passed)", icon: <GraduationCap className="w-10 h-10 text-blue-400" /> },
-  { label: "College", value: "IT Student at Naga College Foundation", icon: <Book className="w-10 h-10 text-green-400" /> },
-];
-
-const educationAchievements = [
-  "🎓 NC II Certified",
-  "✅ TESDA Passed",
-  "💻 Beginner Frontend Developer",
-  "📚 Always Learning",
-  "🌟 Dreaming Big",
-];
-
-// --- Background Generation Functions ---
 const generateStars = (count: number): DynamicElement[] => 
   Array.from({ length: count }, (_, i) => ({
     id: i,
@@ -94,43 +98,23 @@ const generateOrbs = (count: number): DynamicElement[] =>
     },
   }));
 
-export default function Education() {
-  const [highlight, setHighlight] = useState<number | null>(null);
 
-  // State for dynamic background
-  const [isMounted, setIsMounted] = useState(false); 
-  const [stars, setStars] = useState<DynamicElement[]>([]);
-  const [orbs, setOrbs] = useState<DynamicElement[]>([]);
+// --- 5. COMPONENT: EducationBackground ---
 
-  // NEW STATE FOR SEQUENTIAL FADE-IN
-  const [showTitle, setShowTitle] = useState(false);
-  const [showItems, setShowItems] = useState(false);
-  const [showAchievements, setShowAchievements] = useState(false);
+interface EducationBackgroundProps {
+  stars: DynamicElement[];
+  orbs: DynamicElement[];
+}
 
-
-  // Initialize Background and Fade-in Sequence
-  useEffect(() => {
-    setStars(generateStars(30));
-    setOrbs(generateOrbs(5));
-    setIsMounted(true); 
-
-    // Start sequential fade-in effect (400ms delay between steps)
-    const stepDelay = 400; 
-    const t1 = setTimeout(() => setShowTitle(true), stepDelay * 1);
-    const t2 = setTimeout(() => setShowItems(true), stepDelay * 2);
-    const t3 = setTimeout(() => setShowAchievements(true), stepDelay * 3);
-    
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-    };
-
-  }, []);
-  
-  // Conditional rendering of the dynamic background elements
-  const BackgroundElements = isMounted ? (
+const EducationBackground: React.FC<EducationBackgroundProps> = ({ stars, orbs }) => {
+  return (
     <>
+      {/* Inject custom CSS styles for animations */}
+      <style dangerouslySetInnerHTML={{ __html: customStyles }} />
+      
+      {/* Animated Space Background Gradient (Static part) */}
+      <div className="fixed inset-0 bg-gradient-to-b from-gray-950 to-blue-950/70 z-0"></div>
+
       {/* Floating Stars/Particles */}
       <div className="fixed inset-0 z-0">
         {stars.map((star) => (
@@ -153,64 +137,129 @@ export default function Education() {
         ))}
       </div>
     </>
-  ) : null; 
-  // --- End Background Setup ---
+  );
+};
 
-  const handleClick = (index: number) => {
+
+// --- 6. MAIN COMPONENT: Education ---
+
+export default function Education() {
+  const [highlight, setHighlight] = useState<number | null>(null);
+
+  // Use useMemo to ensure background generation runs once and memoizes the output
+  const stars = useMemo(() => generateStars(40), []);
+  const orbs = useMemo(() => generateOrbs(5), []);
+
+  // State for sequential fade-in effect
+  const [showTitle, setShowTitle] = useState(false);
+  const [showItems, setShowItems] = useState(false);
+  const [showAchievements, setShowAchievements] = useState(false);
+
+  // Initialize Fade-in Sequence
+  useEffect(() => {
+    // Start sequential fade-in effect
+    const t1 = setTimeout(() => setShowTitle(true), FADE_IN_DELAY_MS * 1);
+    const t2 = setTimeout(() => setShowItems(true), FADE_IN_DELAY_MS * 2);
+    const t3 = setTimeout(() => setShowAchievements(true), FADE_IN_DELAY_MS * 3);
+    
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+    };
+  }, []); 
+
+  // Use useCallback for event handlers for better performance/stability
+  const handleClick = useCallback((index: number) => {
     setHighlight(index);
-    setTimeout(() => setHighlight(null), 1000);
-  };
+    // Remove highlight after a brief period
+    setTimeout(() => setHighlight(null), 800); 
+  }, []);
 
   return (
-    <>
-      {/* Inject custom CSS styles for animations */}
-      <style dangerouslySetInnerHTML={{ __html: customStyles }} />
+    <div className="relative min-h-screen font-sans">
+      
+      {/* Background Component (Unchanged) */}
+      <EducationBackground stars={stars} orbs={orbs} />
 
-      <div className="relative min-h-screen font-sans">
+      {/* Main Content Area */}
+      <section className="relative w-full min-h-screen py-24 md:py-32 px-4 sm:px-8 flex flex-col items-center justify-center z-10">
         
-        {/* Animated Space Background Gradient (Static part) */}
-        <div className="fixed inset-0 bg-gradient-to-b from-gray-950 to-blue-950/70 z-0"></div>
+        {/* FADE-IN STAGE 1: TITLE (Unchanged) */}
+        <h1 
+          className={`text-6xl font-extrabold mb-4 pb-2 border-b-4 border-cyan-500/50 text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-400 
+            transition-opacity duration-700 text-center uppercase tracking-wider ${showTitle ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
+        >
+          Educational Trajectory
+        </h1>
+        <p 
+          className={`text-xl text-gray-400 mb-16 transition-opacity duration-700 delay-200 ${showTitle ? "opacity-100" : "opacity-0"}`}
+        >
+          Milestones in my academic and skill development journey.
+        </p>
         
-        {/* RENDER THE DYNAMIC BACKGROUND ELEMENTS CONDITIONALLY */}
-        {BackgroundElements}
-
-        {/* Original Content wrapped in <section> with z-10 */}
-        <section className="relative w-full min-h-screen py-24 md:py-32 px-8 flex flex-col items-center justify-center z-10">
-          {/* FADE-IN STAGE 1: TITLE */}
-          <h1 className={`text-5xl font-extrabold text-cyan-400 mb-12 transition-opacity duration-700 ${showTitle ? "opacity-100" : "opacity-0"}`}>
-            Education
-          </h1>
-          
-          {/* FADE-IN STAGE 2: EDUCATION ITEMS */}
-          <div className={`flex flex-col gap-8 w-full max-w-3xl z-10 transition-opacity duration-700 ${showItems ? "opacity-100" : "opacity-0"}`}>
-            {educationItems.map((item, index) => (
-              <div
-                key={index}
-                onClick={() => handleClick(index)}
-                className={`flex items-center gap-6 p-6 rounded-xl shadow-lg cursor-pointer transition-all duration-300 hover:scale-105 translate-z-0 ${
-                  highlight === index ? "bg-blue-900/70 shadow-blue-500/50" : "bg-blue-950/20 backdrop-blur-sm"
-                }`}
-              >
-                <div>{item.icon}</div>
-                <div className="text-left">
-                  <h2 className="text-2xl font-semibold text-white">{item.label}</h2>
-                  <p className="text-gray-200 mt-1">{item.value}</p>
+        {/* FADE-IN STAGE 2: EDUCATION ITEMS (Card Grid) */}
+        <div 
+          className={`flex flex-col md:flex-row justify-center items-stretch gap-8 w-full max-w-6xl z-10 
+            transition-opacity duration-700 ${showItems ? "opacity-100" : "opacity-0"}`}
+        >
+          {EDUCATION_ITEMS.map((item, index) => (
+            <div
+              key={index}
+              role="button"
+              aria-label={`Details for ${item.label}`}
+              onClick={() => handleClick(index)}
+              className={`flex flex-col flex-1 min-w-[280px] p-0 rounded-2xl cursor-pointer transition-all duration-300 transform border shadow-2xl overflow-hidden ${
+                highlight === index 
+                  // Highlight state: stronger glow, scale, definite border color
+                  ? `scale-[1.03] bg-blue-900/60 shadow-blue-500/50 border-2 border-cyan-400` 
+                  // Default state: ethereal glow/shadow, subtle border
+                  : "bg-blue-950/25 backdrop-blur-sm border-blue-700/30 hover:scale-[1.02] hover:border-cyan-500/50 hover:shadow-cyan-900/60"
+              }`}
+              style={{ transitionDelay: `${index * 100}ms` }}
+            >
+              {/* Card Header Section */}
+              <div className={`p-6 flex items-center justify-between border-b-2 ${highlight === index ? 'border-cyan-400' : 'border-blue-700/50'} bg-blue-900/40`}>
+                <h2 className={`text-xl font-extrabold tracking-wide ${item.color}`}>{item.label}</h2>
+                <div className={`p-2 rounded-full ${item.color} bg-blue-800/50`}>
+                  {item.icon}
                 </div>
               </div>
-            ))}
-          </div>
-          
-          {/* FADE-IN STAGE 3: ACHIEVEMENTS */}
-          <div className={`mt-12 flex flex-wrap justify-center gap-6 z-10 transition-opacity duration-700 ${showAchievements ? "opacity-100" : "opacity-0"}`}>
-            {educationAchievements.map((achieve, index) => (
-              <div key={index} className="bg-blue-950/30 backdrop-blur-sm px-4 py-2 rounded-xl text-lg text-gray-50 flex items-center gap-2 shadow-md hover:bg-blue-700/40 hover:scale-105 transition-all duration-300 translate-z-0">
-                <Star className="w-5 h-5 text-yellow-400 animate-pulse" />
+
+              {/* Card Body Section */}
+              <div className="p-6 flex flex-col justify-between flex-grow">
+                <p className="text-gray-300 text-base leading-relaxed">{item.value}</p>
+                <div className="mt-4 flex items-center justify-end text-cyan-400 font-semibold text-sm">
+                  View Details 
+                  <ChevronRight className="w-4 h-4 ml-1" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        {/* FADE-IN STAGE 3: ACHIEVEMENTS (Skills and Mindset) (Unchanged) */}
+        <div 
+          className={`mt-16 pt-8 border-t border-blue-700/50 w-full max-w-4xl flex flex-col items-center justify-center gap-4 z-10 
+            transition-opacity duration-700 ${showAchievements ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+        >
+          <h3 className="text-center text-xl font-semibold text-cyan-300/90 flex items-center gap-2">
+             <Zap className="w-6 h-6 text-yellow-500"/> Core Achievements & Focus
+          </h3>
+          <div className="flex flex-wrap justify-center gap-3">
+            {EDUCATION_ACHIEVEMENTS.map((achieve, index) => (
+              <div 
+                key={index} 
+                className="bg-blue-800/40 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm text-gray-50 flex items-center gap-2 shadow-lg 
+                  hover:bg-blue-700/50 transition-all duration-300 font-medium border border-blue-600/50"
+              >
+                <Star className="w-3 h-3 text-yellow-400"/>
                 {achieve}
               </div>
             ))}
           </div>
-        </section>
-      </div>
-    </>
+        </div>
+      </section>
+    </div>
   );
 }

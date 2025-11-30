@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Mail, Facebook, Instagram, Github, X } from "lucide-react"; // X imported here for the close button
 
 // --- CUSTOM CSS STYLES (Includes Background, Icon, and Content Animations for all pages) ---
@@ -128,6 +128,15 @@ interface HomeProps {
   isMounted: boolean;
 }
 
+const ROTATING_TITLES = [
+  "Frontend Developer",
+  "IT Student",
+  "Beginner Frontend",
+  "Still Learning Programming",
+  "Passionate Learner", // Added
+  "Aspiring UI/UX Dev", // Added
+];
+
 const HomeView: React.FC<HomeProps> = ({ navigateTo, stars, orbs, isMounted }) => {
   const [isImageFaded, setIsImageFaded] = useState(false);
   const [showProjectMessage, setShowProjectMessage] = useState(false);
@@ -138,7 +147,10 @@ const HomeView: React.FC<HomeProps> = ({ navigateTo, stars, orbs, isMounted }) =
   const [showParagraph, setShowParagraph] = useState(false);
   const [showButtons, setShowButtons] = useState(false); 
 
-  // Sequential Fade-In Logic
+  // New state for rotating title
+  const [rotatingTitleIndex, setRotatingTitleIndex] = useState(0);
+
+  // 1. Sequential Fade-In Logic
   useEffect(() => {
     const initialDelay = 200;
     const stepDelay = 500; // Time between each element appearing
@@ -154,6 +166,15 @@ const HomeView: React.FC<HomeProps> = ({ navigateTo, stars, orbs, isMounted }) =
       clearTimeout(timer3);
       clearTimeout(timer4);
     };
+  }, []);
+
+  // 2. Title Rotation Logic
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+        setRotatingTitleIndex(prevIndex => (prevIndex + 1) % ROTATING_TITLES.length);
+    }, 3000); // Change title every 3 seconds
+
+    return () => clearInterval(intervalId);
   }, []);
 
   // Handles the "View Projects" button click
@@ -202,9 +223,18 @@ const HomeView: React.FC<HomeProps> = ({ navigateTo, stars, orbs, isMounted }) =
           Hi, I'm Jaymer
         </p>
         
-        {/* Stage 1: Frontend Developer - Fades in second */}
-        <h1 className={`text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-4 drop-shadow-2xl transition-opacity duration-700 ${showTitle ? "opacity-100 fade-up-2" : "opacity-0"}`} style={{ opacity: 0 }}>
-          Frontend Developer
+        {/* Stage 1: Dynamic Title - Fades in second and rotates */}
+        <h1 
+          // Key change forces a re-render/transition when the title text changes
+          key={ROTATING_TITLES[rotatingTitleIndex]} 
+          className={`
+            text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-4 drop-shadow-2xl 
+            transition-all duration-500 ease-in-out transform
+            ${showTitle ? "opacity-100 fade-up-2" : "opacity-0"}
+          `} 
+          style={{ opacity: 0 }}
+        >
+          {ROTATING_TITLES[rotatingTitleIndex]}
         </h1>
         
         {/* Stage 2: Paragraph - Fades in third */}
