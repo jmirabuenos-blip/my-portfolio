@@ -1,49 +1,26 @@
 "use client";
-import { useState, useEffect } from "react";
-import { Mail, Facebook, Instagram, Github } from "lucide-react";
+import { useState, useEffect, useCallback, JSX } from "react";
+import { Mail, Facebook, Instagram, Github, Send } from "lucide-react";
 
-// --- CUSTOM CSS STYLES (Includes Background, Icon, and Content Animations) ---
+// --- CUSTOM CSS STYLES (Background Animations - kept separate as they are theme-neutral) ---
 const customStyles = `
 /* Keyframes for Stars/Particles (Background) */
 @keyframes float {
-  0% {
-    transform: translateY(0px) translateX(0px);
-    opacity: 0.7;
-  }
-  50% {
-    transform: translateY(-20px) translateX(10px);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(0px) translateX(0px);
-    opacity: 0.7;
-  }
+  0% { transform: translateY(0px) translateX(0px); opacity: 0.7; }
+  50% { transform: translateY(-20px) translateX(10px); opacity: 1; }
+  100% { transform: translateY(0px) translateX(0px); opacity: 0.7; }
 }
 
 /* Keyframes for Orbs/Nebula Glow (Background) */
 @keyframes float-slow {
-  0% {
-    transform: translateY(0px) translateX(0px);
-    opacity: 0.2; 
-  }
-  50% {
-    transform: translateY(-50px) translateX(20px);
-    opacity: 0.4;
-  }
-  100% {
-    transform: translateY(0px) translateX(0px);
-    opacity: 0.2;
-  }
+  0% { transform: translateY(0px) translateX(0px); opacity: 0.2; }
+  50% { transform: translateY(-50px) translateX(20px); opacity: 0.4; }
+  100% { transform: translateY(0px) translateX(0px); opacity: 0.2; }
 }
 
 /* Apply animations using standard class names */
-.animate-float {
-  animation: float 20s ease-in-out infinite;
-}
-
-.animate-float-slow {
-  animation: float-slow 30s ease-in-out infinite;
-}
+.animate-float { animation: float 20s ease-in-out infinite; }
+.animate-float-slow { animation: float-slow 30s ease-in-out infinite; }
 
 /* Keyframes for Floating Emojis (Fade-In and Vertical Movement) */
 @keyframes contactFadeIn {
@@ -59,16 +36,9 @@ const customStyles = `
 }
 
 /* Specific classes for staggered content fade-in */
-.fade-up-1 {
-  animation: contentFadeUp 1.0s ease-out forwards;
-}
-.fade-up-2 {
-  animation: contentFadeUp 1.0s ease-out 0.2s forwards; /* 200ms delay */
-}
-.fade-up-3 {
-  animation: contentFadeUp 1.0s ease-out 0.4s forwards; /* 400ms delay for links */
-}
-
+.fade-up-1 { animation: contentFadeUp 1.0s ease-out forwards; }
+.fade-up-2 { animation: contentFadeUp 1.0s ease-out 0.2s forwards; }
+.fade-up-3 { animation: contentFadeUp 1.0s ease-out 0.4s forwards; }
 
 /* Keyframes for Shake Effect */
 @keyframes shake {
@@ -122,6 +92,36 @@ export default function Contact() {
   const [floatingIcons, setFloatingIcons] = useState<FloatingIcon[]>([]);
   const [contactShake, setContactShake] = useState(false);
 
+  // --- THEME LOGIC START ---
+  const getThemeFromDOM = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return true; 
+  }, []);
+  
+  const [isDarkMode, setIsDarkMode] = useState(getThemeFromDOM); 
+
+  useEffect(() => {
+    if (!isMounted) return;
+
+    const observer = new MutationObserver((mutationsList) => {
+      for (const mutation of mutationsList) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+          const newIsDark = document.documentElement.classList.contains('dark');
+          if (newIsDark !== isDarkMode) {
+            setIsDarkMode(newIsDark);
+          }
+        }
+      }
+    });
+
+    observer.observe(document.documentElement, { attributes: true });
+
+    return () => observer.disconnect();
+  }, [isMounted, isDarkMode]);
+  // --- THEME LOGIC END ---
+
   // Initialize Background and Floating Icons
   useEffect(() => {
     // Background Setup
@@ -148,10 +148,28 @@ export default function Contact() {
     return () => clearInterval(interval);
   }, []);
   
+  // --- DYNAMIC STYLE DEFINITIONS ---
+  const accentColor = isDarkMode ? "text-blue-400" : "text-blue-600";
+  const textColor = isDarkMode ? "text-gray-300" : "text-gray-700";
+  
+  // Adjusted Card styles: Dark mode uses high contrast, Light mode uses lighter shades and shadows
+  const cardBackground = isDarkMode 
+    ? "bg-gray-800/60 shadow-lg hover:shadow-blue-500/50" 
+    : "bg-white/90 border border-gray-200 shadow-md hover:shadow-blue-300/50";
+  
+  const iconColor = isDarkMode ? "text-blue-400" : "text-blue-600";
+  const linkTextColor = isDarkMode ? "text-gray-200" : "text-gray-800";
+  
+  // The background gradient is now conditional based on the theme
+  const mainBackground = isDarkMode 
+    ? "bg-gradient-to-b from-gray-950 to-blue-950/70" // Original Dark/Space Theme
+    : "bg-gradient-to-b from-blue-50/70 to-white"; // Simple Light Theme Gradient (less dramatic)
+
+
   // Conditional rendering of the dynamic background elements
   const BackgroundElements = isMounted ? (
     <>
-      {/* Floating Stars/Particles */}
+      {/* Floating Stars/Particles (Kept slightly blue/white for both) */}
       <div className="fixed inset-0 z-0">
         {stars.map((star) => (
           <div
@@ -175,12 +193,12 @@ export default function Contact() {
     </>
   ) : null; 
 
-  // Icons explicitly set to white
+  // Icons are now dynamic based on the theme
   const contactLinks = [
-    { name: "Email", icon: <Mail size={30} className="text-white" />, link: "mailto:Jmirabuenos@gbox.ncf.edu.ph" },
-    { name: "Facebook", icon: <Facebook size={30} className="text-white" />, link: "https://www.facebook.com/jaymer.mirabuenos.2025" },
-    { name: "Instagram", icon: <Instagram size={30} className="text-white" />, link: "https://www.instagram.com/jajajaymerrr/" },
-    { name: "Github", icon: <Github size={30} className="text-white" />, link: "https://github.com/jmirabuenos-blip" },
+    { name: "Email", icon: <Mail size={30} className={iconColor} />, link: "mailto:Jmirabuenos@gbox.ncf.edu.ph" },
+    { name: "Facebook", icon: <Facebook size={30} className={iconColor} />, link: "https://www.facebook.com/jaymer.mirabuenos.2025" },
+    { name: "Instagram", icon: <Instagram size={30} className={iconColor} />, link: "https://www.instagram.com/jajajaymerrr/" },
+    { name: "Github", icon: <Github size={30} className={iconColor} />, link: "https://github.com/jmirabuenos-blip" },
   ];
 
   const handleClick = () => {
@@ -195,8 +213,8 @@ export default function Contact() {
       
       <div className="relative min-h-screen font-sans">
         
-        {/* Animated Space Background Gradient (Static part) */}
-        <div className="fixed inset-0 bg-gradient-to-b from-gray-950 to-blue-950/70 z-0"></div>
+        {/* Animated Background Gradient (Theme dependent now) */}
+        <div className={`fixed inset-0 ${mainBackground} z-0`}></div>
         
         {/* RENDER THE DYNAMIC BACKGROUND ELEMENTS CONDITIONALLY */}
         {BackgroundElements}
@@ -208,56 +226,66 @@ export default function Contact() {
           {floatingIcons.map((icon) => (
             <span
               key={icon.id}
-              className="absolute pointer-events-none z-50 text-white"
+              className="absolute pointer-events-none z-50 text-blue-300" // Kept blue for contrast
               style={{ 
-                  top: `${icon.top}%`, 
-                  left: `${icon.left}%`, 
-                  fontSize: `${icon.size}px`, 
-                  opacity: 0, // Ensure starting opacity is 0 for fade
-                  animation: "contactFadeIn 3s forwards" 
+                top: `${icon.top}%`, 
+                left: `${icon.left}%`, 
+                fontSize: `${icon.size}px`, 
+                opacity: 0, 
+                animation: "contactFadeIn 3s forwards" 
               }}
             >
               {icon.emoji}
             </span>
           ))}
+          
+          {/* Main Card Container (A subtle, professional card) */}
+          <div className={`w-full max-w-2xl p-8 rounded-xl backdrop-blur-sm transition-all duration-500 ${cardBackground}`}>
+          
+            {/* Title */}
+            <h1
+              onClick={handleClick}
+              className={`text-4xl md:text-5xl font-extrabold ${accentColor} cursor-pointer mb-4 relative opacity-0 fade-up-1 text-center ${
+                contactShake ? "animate-shake" : ""
+              }`}
+            >
+              Get in Touch <Send className="inline w-8 h-8 ml-2"/>
+            </h1>
 
-          {/* H1 - Fade-in stage 1 */}
-          <h1
-            onClick={handleClick}
-            // Applying fade-up class
-            className={`text-5xl md:text-6xl font-extrabold text-blue-400 cursor-pointer mb-6 relative translate-z-0 opacity-0 fade-up-1 ${
-              contactShake ? "animate-shake" : ""
-            }`}
-          >
-            Contact Me
-          </h1>
+            {/* Paragraph */}
+            <p 
+              className={`text-lg max-w-xl text-center leading-relaxed mx-auto mb-10 opacity-0 fade-up-2 ${textColor}`}
+            >
+              I'm always open to discussing new opportunities, collaborations, or simply connecting with fellow professionals. Feel free to reach out via any of the platforms below.
+            </p>
 
-          {/* P - Fade-in stage 2 */}
-          <p 
-            // Applying fade-up class with delay
-            className="text-gray-300 text-lg max-w-xl text-center leading-relaxed mb-8 opacity-0 fade-up-2"
-          >
-            I'd love to hear from you! Whether it's a project idea, collaboration, or just a friendly hello — reach out anytime.
+            {/* Links Grid */}
+            <div 
+              className="grid grid-cols-2 sm:grid-cols-4 gap-6 z-10 opacity-0 fade-up-3"
+            >
+              {contactLinks.map((c, idx) => (
+                <a
+                  key={idx}
+                  href={c.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`flex flex-col items-center justify-center p-4 rounded-xl shadow-md transition-all duration-300 backdrop-blur-sm translate-z-0
+                    ${isDarkMode ? 'bg-gray-700/50 hover:bg-gray-700' : 'bg-gray-100/80 hover:bg-gray-200'}
+                  `}
+                >
+                  {c.icon}
+                  <span className={`mt-2 text-sm font-medium ${linkTextColor}`}>{c.name}</span>
+                </a>
+              ))}
+            </div>
+            
+          </div> {/* End Main Card */}
+          
+          {/* Simple Footer Note */}
+          <p className={`mt-10 text-sm opacity-0 fade-up-3 ${textColor}`}>
+              Responsive and professional, just like this portfolio section. 💻
           </p>
 
-          {/* Links Grid - Fade-in stage 3 */}
-          <div 
-            // Applying fade-up class with more delay
-            className="grid grid-cols-2 sm:grid-cols-4 gap-6 z-10 opacity-0 fade-up-3"
-          >
-            {contactLinks.map((c, idx) => (
-              <a
-                key={idx}
-                href={c.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex flex-col items-center justify-center bg-gray-900/50 p-6 rounded-xl shadow-lg hover:scale-105 hover:shadow-blue-500 transition-all duration-300 backdrop-blur-sm translate-z-0"
-              >
-                {c.icon}
-                <span className="mt-2 text-sm text-gray-300">{c.name}</span>
-              </a>
-            ))}
-          </div>
         </section>
       </div>
     </>
