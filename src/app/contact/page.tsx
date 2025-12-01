@@ -94,14 +94,48 @@ export default function Contact() {
 
   // --- THEME LOGIC START ---
   const getThemeFromDOM = useCallback(() => {
+    // Check if window is defined (i.e., we are client-side)
     if (typeof window !== 'undefined') {
       return document.documentElement.classList.contains('dark');
     }
-    return true; 
+    // Default to false (light mode) on the server to prevent mismatches
+    return false; 
   }, []);
   
-  const [isDarkMode, setIsDarkMode] = useState(getThemeFromDOM); 
+  // FIX: Initialize with 'false' (light mode) to avoid hydration mismatch
+  const [isDarkMode, setIsDarkMode] = useState(false); 
 
+  // Initialize Theme and Background on Mount
+  useEffect(() => {
+    setIsMounted(true);
+    
+    // FIX: Immediately fetch and set the correct theme state on the client side.
+    setIsDarkMode(getThemeFromDOM());
+    
+    // Background Setup (Can be done unconditionally, as opacity will handle visibility)
+    setStars(generateStars(30));
+    setOrbs(generateOrbs(5));
+
+    // Floating Icon Interval
+    const interval = setInterval(() => {
+      const emojis = ["📧", "💌", "⭐", "🌟", "📱"];
+      const icon = {
+        id: Date.now() + Math.random(),
+        emoji: emojis[Math.floor(Math.random() * emojis.length)],
+        top: Math.random() * 80,
+        left: Math.random() * 90,
+        size: 12 + Math.random() * 20,
+        delay: 0,
+      };
+      setFloatingIcons((prev) => [...prev, icon]);
+      // Remove the icon after its animation duration
+      setTimeout(() => setFloatingIcons((prev) => prev.filter((e) => e.id !== icon.id)), 5000); 
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [getThemeFromDOM]);
+  
+  // MutationObserver to watch the <html> tag for theme class changes
   useEffect(() => {
     if (!isMounted) return;
 
@@ -122,32 +156,6 @@ export default function Contact() {
   }, [isMounted, isDarkMode]);
   // --- THEME LOGIC END ---
 
-  // Initialize Background and Floating Icons
-  useEffect(() => {
-    // Background Setup
-    setStars(generateStars(30));
-    setOrbs(generateOrbs(5));
-    setIsMounted(true); 
-
-    // Floating Icon Interval
-    const interval = setInterval(() => {
-      const emojis = ["📧", "💌", "⭐", "🌟", "📱"];
-      const icon = {
-        id: Date.now() + Math.random(),
-        emoji: emojis[Math.floor(Math.random() * emojis.length)],
-        top: Math.random() * 80,
-        left: Math.random() * 90,
-        size: 12 + Math.random() * 20,
-        delay: 0,
-      };
-      setFloatingIcons((prev) => [...prev, icon]);
-      // Remove the icon after its animation duration
-      setTimeout(() => setFloatingIcons((prev) => prev.filter((e) => e.id !== icon.id)), 5000); 
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, []);
-  
   // --- DYNAMIC STYLE DEFINITIONS ---
   const accentColor = isDarkMode ? "text-blue-400" : "text-blue-600";
   const textColor = isDarkMode ? "text-gray-300" : "text-gray-700";
@@ -211,7 +219,7 @@ export default function Contact() {
       {/* Inject custom CSS styles for all animations (background and contact) */}
       <style dangerouslySetInnerHTML={{ __html: customStyles }} />
       
-      <div className="relative min-h-screen font-sans">
+      <div className={`relative min-h-screen font-sans ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
         
         {/* Animated Background Gradient (Theme dependent now) */}
         <div className={`fixed inset-0 ${mainBackground} z-0`}></div>

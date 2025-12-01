@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import React from "react";
 
 // --- START: Simplified Lucide Icon Imports ---
@@ -45,7 +45,7 @@ const School = createIcon([
 const Star = createIcon("M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01L12 2z");
 const Zap = createIcon("M13 2 3 14 12 14 11 22 21 10 12 10 13 2");
 const ChevronRight = createIcon("m9 18 6-6-6-6");
-// --- END: Simulated Lucide Icon Imports ---
+// --- END: Simplified Lucide Icon Imports ---
 
 // --- 1. DATA TYPES AND CONSTANTS ---
 
@@ -78,15 +78,16 @@ export default function Education() {
 
   // THEME SYNCHRONIZATION LOGIC
   const getThemeFromDOM = useCallback(() => {
+    // Check if window is defined (i.e., we are client-side)
     if (typeof window !== 'undefined') {
       return document.documentElement.classList.contains('dark');
     }
-    return true; 
+    // Default to false (light mode) on the server to prevent mismatches
+    return false; 
   }, []);
   
-  // 🐛 FIX: Initialize isDarkMode *after* mount if window is available, otherwise default to a safe light mode color until resolved.
-  // Since the useEffect immediately updates it, we keep the call here for initialization but rely on useEffect for truth.
-  const [isDarkMode, setIsDarkMode] = useState(getThemeFromDOM); 
+  // Initialize with 'false' (light mode)
+  const [isDarkMode, setIsDarkMode] = useState(false); 
   const [isMounted, setIsMounted] = useState(false);
 
   // State for sequential fade-in effect
@@ -97,7 +98,8 @@ export default function Education() {
   // Initialize Fade-in Sequence & Theme
   useEffect(() => {
     setIsMounted(true);
-    // Re-fetch the current theme state from DOM to ensure accuracy
+    
+    // Immediately set the correct theme state on the client side.
     setIsDarkMode(getThemeFromDOM());
     
     const t1 = setTimeout(() => setShowTitle(true), FADE_IN_DELAY_MS * 1);
@@ -113,12 +115,14 @@ export default function Education() {
 
   // MutationObserver to watch the <html> tag for theme class changes
   useEffect(() => {
-    if (!isMounted) return;
+    // The observer should only be active once mounted
+    if (!isMounted) return; 
 
     const observer = new MutationObserver((mutationsList) => {
       for (const mutation of mutationsList) {
         if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
           const newIsDark = document.documentElement.classList.contains('dark');
+          // Only update if the value has actually changed to prevent unnecessary re-renders
           if (newIsDark !== isDarkMode) {
             setIsDarkMode(newIsDark);
           }
@@ -126,6 +130,7 @@ export default function Education() {
       }
     });
 
+    // Observe the <html> element for attribute changes (specifically 'class')
     observer.observe(document.documentElement, { attributes: true });
 
     return () => observer.disconnect();
@@ -137,26 +142,30 @@ export default function Education() {
     setTimeout(() => setHighlight(null), 800); 
   }, []);
 
-  // 🟢 SIMPLIFIED COLOR VARIABLES (Primary: Indigo/Blue, Neutral: Gray/White)
-  const primaryAccent = isDarkMode 
-    ? "text-indigo-400 border-indigo-500" // Primary Color for Dark Mode
-    : "text-indigo-600 border-indigo-600"; // Primary Color for Light Mode
-    
-  const neutralText = isDarkMode 
-    ? "text-gray-300" // Body text
-    : "text-gray-700";
-    
-  const cardBackground = isDarkMode
-    ? "bg-gray-800/80 border border-gray-700 shadow-xl shadow-gray-950/50" // Dark Card
-    : "bg-white/80 border border-gray-200 shadow-lg shadow-gray-100/50"; // Light Card
-    
-  const highlightBackground = isDarkMode
-    ? "bg-gray-700/80 border-2 border-indigo-400"
-    : "bg-indigo-50/70 border-2 border-indigo-600";
+  // SIMPLIFIED COLOR VARIABLES
+  const themeClasses = {
+    primaryAccent: isDarkMode 
+      ? "text-indigo-400 border-indigo-500"
+      : "text-indigo-600 border-indigo-600",
+    neutralText: isDarkMode 
+      ? "text-gray-300"
+      : "text-gray-700",
+    cardBackground: isDarkMode
+      ? "bg-gray-800/80 border border-gray-700 shadow-xl shadow-gray-950/50"
+      : "bg-white/80 border border-gray-200 shadow-lg shadow-gray-100/50",
+    highlightBackground: isDarkMode
+      ? "bg-gray-700/80 border-2 border-indigo-400"
+      : "bg-indigo-50/70 border-2 border-indigo-600",
+    chipBg: isDarkMode ? "bg-gray-700/40" : "bg-gray-100/80",
+    chipText: isDarkMode ? "text-gray-50" : "text-gray-800",
+    chipBorder: isDarkMode ? "border-gray-700/50" : "border-gray-300/80",
+    divider: isDarkMode ? 'border-gray-700' : 'border-gray-300',
+    cardDivider: isDarkMode ? 'border-gray-700/50' : 'border-gray-200/50',
+  }
 
 
   return (
-    // 🟢 Simplified Background: Set by layout.tsx (dark gray / white)
+    // General text color for the container
     <div className={`relative min-h-screen font-sans ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
       
       {/* Main Content Area */}
@@ -165,15 +174,15 @@ export default function Education() {
         {/* FADE-IN STAGE 1: TITLE */}
         <h1 
           className={`text-5xl md:text-6xl font-extrabold mb-4 pb-3 border-b-4 
-            ${primaryAccent} 
+            ${themeClasses.primaryAccent} 
             transition-opacity duration-700 text-center uppercase tracking-wider ${showTitle ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
         >
           Education
         </h1>
         
-        {/* Introductory paragraph uses neutralText for body content */}
+        {/* Introductory paragraph */}
         <p 
-          className={`text-lg md:text-xl ${neutralText} mb-16 transition-opacity duration-700 delay-200 ${showTitle ? "opacity-100" : "opacity-0"}`}
+          className={`text-lg md:text-xl ${themeClasses.neutralText} mb-16 transition-opacity duration-700 delay-200 ${showTitle ? "opacity-100" : "opacity-0"}`}
         >
           My formal academic path and skill milestones.
         </p>
@@ -194,17 +203,17 @@ export default function Education() {
                 onClick={() => handleClick(index)}
                 className={`flex flex-col flex-1 min-w-[280px] p-0 rounded-xl cursor-pointer transition-all duration-300 transform overflow-hidden 
                   ${isHighlighted 
-                    ? `scale-[1.03] ${highlightBackground}` 
-                    : `${cardBackground} hover:scale-[1.02]`
+                    ? `scale-[1.03] ${themeClasses.highlightBackground}` 
+                    : `${themeClasses.cardBackground} hover:scale-[1.02]`
                   }
                 `}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 {/* Card Header Section */}
-                <div className={`p-6 flex items-center justify-between border-b ${isDarkMode ? 'border-gray-700/50' : 'border-gray-200/50'}`}>
-                  {/* Header uses primaryAccent (text-indigo-600) */}
-                  <h2 className={`text-xl font-bold tracking-wide ${primaryAccent.split(' ')[0]}`}>{item.label}</h2>
-                  <div className={`p-2 rounded-full ${primaryAccent.split(' ')[0]} ${isDarkMode ? 'bg-indigo-900/40' : 'bg-indigo-100/60'}`}>
+                <div className={`p-6 flex items-center justify-between border-b ${themeClasses.cardDivider}`}>
+                  {/* Header uses primaryAccent */}
+                  <h2 className={`text-xl font-bold tracking-wide ${themeClasses.primaryAccent.split(' ')[0]}`}>{item.label}</h2>
+                  <div className={`p-2 rounded-full ${themeClasses.primaryAccent.split(' ')[0]} ${isDarkMode ? 'bg-indigo-900/40' : 'bg-indigo-100/60'}`}>
                     {item.icon}
                   </div>
                 </div>
@@ -212,10 +221,10 @@ export default function Education() {
                 {/* Card Body Section */}
                 <div className="p-6 flex flex-col justify-between flex-grow">
                   {/* Body text uses neutralText */}
-                  <p className={`${neutralText} text-base leading-relaxed`}>{item.value}</p>
+                  <p className={`${themeClasses.neutralText} text-base leading-relaxed`}>{item.value}</p>
                   
                   {/* Details/CTA uses primaryAccent */}
-                  <div className={`mt-4 flex items-center justify-end ${primaryAccent.split(' ')[0]} font-semibold text-sm`}>
+                  <div className={`mt-4 flex items-center justify-end ${themeClasses.primaryAccent.split(' ')[0]} font-semibold text-sm`}>
                     Details
                     <ChevronRight className="w-4 h-4 ml-1" />
                   </div>
@@ -227,25 +236,21 @@ export default function Education() {
         
         {/* FADE-IN STAGE 3: ACHIEVEMENTS */}
         <div 
-          className={`mt-16 pt-8 border-t ${isDarkMode ? 'border-gray-700' : 'border-gray-300'} w-full max-w-4xl flex flex-col items-center justify-center gap-4 z-10 
+          className={`mt-16 pt-8 border-t ${themeClasses.divider} w-full max-w-4xl flex flex-col items-center justify-center gap-4 z-10 
             transition-opacity duration-700 ${showAchievements ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
-          <h3 className={`text-center text-xl font-semibold ${primaryAccent.split(' ')[0]} flex items-center gap-2`}>
-            <Zap className={`w-6 h-6 ${primaryAccent.split(' ')[0]}`}/> Core Achievements & Focus
+          <h3 className={`text-center text-xl font-semibold ${themeClasses.primaryAccent.split(' ')[0]} flex items-center gap-2`}>
+            <Zap className={`w-6 h-6 ${themeClasses.primaryAccent.split(' ')[0]}`}/> Core Achievements & Focus
           </h3>
           <div className="flex flex-wrap justify-center gap-3">
             {EDUCATION_ACHIEVEMENTS.map((achieve, index) => {
-              const chipBg = isDarkMode ? "bg-gray-700/40" : "bg-gray-100/80";
-              const chipText = isDarkMode ? "text-gray-50" : "text-gray-800";
-              const chipBorder = isDarkMode ? "border-gray-700/50" : "border-gray-300/80";
-
               return (
                 <div 
                   key={index} 
-                  className={`${chipBg} px-4 py-1.5 rounded-full text-sm ${chipText} flex items-center gap-2 
-                    transition-all duration-300 font-medium border ${chipBorder}`}
+                  className={`${themeClasses.chipBg} px-4 py-1.5 rounded-full text-sm ${themeClasses.chipText} flex items-center gap-2 
+                    transition-all duration-300 font-medium border ${themeClasses.chipBorder}`}
                 >
-                  <Star className={`w-3 h-3 ${primaryAccent.split(' ')[0]}`}/>
+                  <Star className={`w-3 h-3 ${themeClasses.primaryAccent.split(' ')[0]}`}/>
                   {achieve}
                 </div>
               );

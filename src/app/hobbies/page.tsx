@@ -151,18 +151,22 @@ export default function Hobbies() {
     if (typeof window !== 'undefined') {
       return document.documentElement.classList.contains('dark');
     }
-    return true; 
+    // Default to false (light mode) on the server to prevent mismatches
+    return false; 
   }, []);
   
-  const [isDarkMode, setIsDarkMode] = useState(getThemeFromDOM); 
+  // FIX: Initialize with 'false' (light mode) to avoid hydration mismatch
+  const [isDarkMode, setIsDarkMode] = useState(false); 
 
   // Initialize Fade-in Sequence, Theme, and Background
   useEffect(() => {
     setIsMounted(true);
+    
+    // FIX: Immediately fetch and set the correct theme state on the client side.
     const initialDarkMode = getThemeFromDOM();
     setIsDarkMode(initialDarkMode);
     
-    // Initialize background if in Dark Mode
+    // Initialize background based on the correct theme state
     if (initialDarkMode) {
         setStars(generateStars(30));
         setOrbs(generateOrbs(5));
@@ -356,7 +360,7 @@ export default function Hobbies() {
             My Hobbies
           </h1>
 
-          {/* UPDATED: Introductory Paragraph with Single Quote and Philosophy Mention */}
+          {/* Introductory Paragraph with Quote and Philosophy Mention */}
           <div 
             className={`w-full max-w-4xl p-8 mb-16 rounded-xl text-center shadow-lg transition-opacity duration-700 delay-300 ${showIntro ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}
               ${isDarkMode ? 'bg-gray-800/60 border border-gray-700' : 'bg-gray-50/70 border border-gray-200'}
