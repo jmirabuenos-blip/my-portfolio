@@ -38,7 +38,7 @@ const PROJECTS = [
     name: "Management App",
     desc: "Full-stack app with user authentication, dashboard, and position management.",
     tags: ["React", "Auth", "Full-stack"],
-    url: "https://my-new-app-pink.vercel.app/",
+    url: "https://my-app-w-position.vercel.app/",
     year: "2024",
   },
 ];
