@@ -76,7 +76,7 @@ export default function AboutPage() {
             Frontend Developer · IT Student · Philippines
           </p>
           <p className={`text-sm leading-relaxed ${dark ? "text-gray-400" : "text-gray-500"}`}>
-            I'm a 3rd-year IT student passionate about building clean, responsive web
+            I'm a 2nd-year IT student passionate about building clean, responsive web
             experiences. I focus on writing maintainable code and creating interfaces
             that feel intuitive and polished. Always learning, always building.
           </p>
