@@ -49,9 +49,18 @@ const EDUCATION = [
 
 const CERTIFICATIONS = [
   {
+    title: "Microsoft Word Associate",
+    issuer: "Microsoft / Certiport",
+    year: "2025",
+    note: "Globally recognized certification demonstrating proficiency in Microsoft Word.",
+    badge: "https://www.credly.com/users/sign_in",
+  },
+  {
     title: "NC II Certificate",
     issuer: "TESDA",
     year: "2022",
+    note: null,
+    badge: null,
   },
 ];
 
@@ -61,8 +70,8 @@ export default function EducationPage() {
 
   const s0 = useFadeIn(80);
   const s1 = useFadeIn(200);
-  const s2 = useFadeIn(380);
-  const s3 = useFadeIn(520);
+  const s2 = useFadeIn(350);
+  const s3 = useFadeIn(500);
 
   return (
     <div className="max-w-3xl mx-auto px-6 pt-16 pb-24">
@@ -85,7 +94,7 @@ export default function EducationPage() {
           Academic Background
         </h1>
         <p className={`text-sm leading-relaxed max-w-md ${dark ? "text-gray-400" : "text-gray-500"}`}>
-          My formal education path, from elementary through my current college studies in IT.
+          My formal education path and certifications earned along the way.
         </p>
       </div>
 
@@ -151,20 +160,43 @@ export default function EducationPage() {
           {CERTIFICATIONS.map((cert, i) => (
             <div
               key={i}
-              className={`flex items-center justify-between px-4 py-3 rounded-lg border
-                ${dark ? "border-white/8 bg-white/2" : "border-black/8 bg-black/2"}`}
+              className={`p-4 rounded-lg border ${dark ? "border-white/8 bg-white/2" : "border-black/8 bg-black/2"}`}
             >
-              <div>
-                <p className={`text-sm font-medium ${dark ? "text-white" : "text-gray-900"}`}>
-                  {cert.title}
-                </p>
-                <p className={`text-xs ${dark ? "text-gray-500" : "text-gray-400"}`}>
-                  {cert.issuer}
-                </p>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <div className="flex flex-wrap items-center gap-2 mb-1">
+                    <p className={`text-sm font-medium ${dark ? "text-white" : "text-gray-900"}`}>
+                      {cert.title}
+                    </p>
+                    <span className={`text-xs px-2 py-0.5 rounded-full border
+                      ${dark ? "text-gray-500 border-white/8" : "text-gray-400 border-black/8"}`}>
+                      {cert.year}
+                    </span>
+                  </div>
+                  <p className={`text-xs mb-2 ${dark ? "text-blue-400" : "text-blue-600"}`}>
+                    {cert.issuer}
+                  </p>
+                  {cert.note && (
+                    <p className={`text-xs leading-relaxed ${dark ? "text-gray-500" : "text-gray-400"}`}>
+                      {cert.note}
+                    </p>
+                  )}
+                </div>
+                {cert.badge && (
+                  <a
+                    href={cert.badge}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`flex-shrink-0 text-xs px-3 py-1.5 rounded-lg border transition-colors
+                      ${dark
+                        ? "border-blue-500/20 text-blue-400 hover:bg-blue-500/10"
+                        : "border-blue-200 text-blue-600 hover:bg-blue-50"
+                      }`}
+                  >
+                    View badge →
+                  </a>
+                )}
               </div>
-              <span className={`text-xs ${dark ? "text-gray-600" : "text-gray-400"}`}>
-                {cert.year}
-              </span>
             </div>
           ))}
         </div>
@@ -176,7 +208,7 @@ export default function EducationPage() {
       {/* ── Footer ── */}
       <div className={`transition-all duration-700 ${s3 ? "opacity-100" : "opacity-0"}`}>
         <p className={`text-xs ${dark ? "text-gray-600" : "text-gray-400"}`}>
-          Currently enrolled · Naga College Foundation · Expected graduation 2028
+          Currently enrolled · Naga College Foundation · Expected graduation 2026
         </p>
       </div>
 

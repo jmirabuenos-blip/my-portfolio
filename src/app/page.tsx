@@ -91,7 +91,7 @@ export default function Page() {
               ${dark ? "text-gray-400" : "text-gray-500"}
               ${s2 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}
           >
-            3rd-year IT student from the Philippines crafting modern, responsive web
+            2nd-year IT student from the Philippines crafting modern, responsive web
             experiences. Passionate about clean UI, thoughtful interactions, and
             continuously leveling up my craft.
           </p>
