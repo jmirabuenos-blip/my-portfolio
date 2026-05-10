@@ -1,263 +1,185 @@
 "use client";
-
 import { useState, useEffect, useCallback } from "react";
-import React from "react";
 
-// --- START: Simplified Lucide Icon Imports ---
-// Define a type for icon props
-interface IconProps extends React.SVGProps<SVGSVGElement> {
-  size?: number | string;
+type Theme = "dark" | "light";
+
+function useTheme(): Theme {
+  const [theme, setTheme] = useState<Theme>("dark");
+  const sync = useCallback(() => {
+    setTheme(document.documentElement.classList.contains("light") ? "light" : "dark");
+  }, []);
+  useEffect(() => {
+    sync();
+    const obs = new MutationObserver(sync);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => obs.disconnect();
+  }, [sync]);
+  return theme;
 }
 
-const createIcon = (dPath: string | string[], viewbox: string = "0 0 24 24") => {
-  return ({ size = 24, ...props }: IconProps) => (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width={size}
-      height={size}
-      viewBox={viewbox}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      {Array.isArray(dPath) ? dPath.map((d, i) => <path key={i} d={d} />) : <path d={dPath} />}
-    </svg>
-  );
-};
-
-// Recreated Icons 
-const Book = createIcon("M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20");
-const GraduationCap = createIcon([
-  "M22 10V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v4",
-  "M12 10a5 5 0 0 1-5 5h10a5 5 0 0 1-5-5z",
-  "M6 10v9",
-  "M18 10v9",
-]);
-const School = createIcon([
-  "M4 22V14",
-  "M20 22V14",
-  "M6 22v-4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4",
-  "M12 6V2l-5 4-7 4v2l12-3 12 3v-2l-7-4-5-4z",
-]);
-const Star = createIcon("M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01L12 2z");
-const Zap = createIcon("M13 2 3 14 12 14 11 22 21 10 12 10 13 2");
-const ChevronRight = createIcon("m9 18 6-6-6-6");
-// --- END: Simplified Lucide Icon Imports ---
-
-// --- 1. DATA TYPES AND CONSTANTS ---
-
-interface EducationItem {
-  label: string;
-  value: string;
-  icon: React.ReactElement;
+function useFadeIn(delay = 0) {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), delay);
+    return () => clearTimeout(t);
+  }, [delay]);
+  return visible;
 }
 
-const EDUCATION_ITEMS: EducationItem[] = [
-  { label: "Elementary Education", value: "Panicuason Elementary School (Focus on Foundational Skills)", icon: <School className="w-6 h-6" /> },
-  { label: "Secondary Education", value: "Carolina National High School (NC II Certificate Holder, TESDA Passed)", icon: <GraduationCap className="w-6 h-6" /> },
-  { label: "Higher Education (Current)", value: "IT Student at Naga College Foundation (Focus on Software Development)", icon: <Book className="w-6 h-6" /> },
+const EDUCATION = [
+  {
+    school: "Naga College Foundation",
+    degree: "Bachelor of Science in Information Technology",
+    period: "2022 — Present",
+    note: "Currently 3rd year. Focusing on software development and web technologies.",
+  },
+  {
+    school: "Carolina National High School",
+    degree: "Secondary Education",
+    period: "2018 — 2022",
+    note: "Completed NC II certification through TESDA during senior high.",
+  },
+  {
+    school: "Panicuason Elementary School",
+    degree: "Elementary Education",
+    period: "2012 — 2018",
+    note: null,
+  },
 ];
 
-const EDUCATION_ACHIEVEMENTS: string[] = [
-  "NC II Certified (Technical Skills)",
-  "TESDA Examination Passed",
-  "Frontend Development (Beginner)",
-  "Continuous Learning Mindset",
-  "Visionary Goal Setting",
+const CERTIFICATIONS = [
+  {
+    title: "NC II Certificate",
+    issuer: "TESDA",
+    year: "2022",
+  },
 ];
 
-const FADE_IN_DELAY_MS = 300;
+export default function EducationPage() {
+  const theme = useTheme();
+  const dark = theme === "dark";
 
-// --- 2. MAIN COMPONENT: Education (Simplified) ---
-
-export default function Education() {
-  const [highlight, setHighlight] = useState<number | null>(null);
-
-  // THEME SYNCHRONIZATION LOGIC
-  const getThemeFromDOM = useCallback(() => {
-    // Check if window is defined (i.e., we are client-side)
-    if (typeof window !== 'undefined') {
-      return document.documentElement.classList.contains('dark');
-    }
-    // Default to false (light mode) on the server to prevent mismatches
-    return false; 
-  }, []);
-  
-  // Initialize with 'false' (light mode)
-  const [isDarkMode, setIsDarkMode] = useState(false); 
-  const [isMounted, setIsMounted] = useState(false);
-
-  // State for sequential fade-in effect
-  const [showTitle, setShowTitle] = useState(false);
-  const [showItems, setShowItems] = useState(false);
-  const [showAchievements, setShowAchievements] = useState(false);
-
-  // Initialize Fade-in Sequence & Theme
-  useEffect(() => {
-    setIsMounted(true);
-    
-    // Immediately set the correct theme state on the client side.
-    setIsDarkMode(getThemeFromDOM());
-    
-    const t1 = setTimeout(() => setShowTitle(true), FADE_IN_DELAY_MS * 1);
-    const t2 = setTimeout(() => setShowItems(true), FADE_IN_DELAY_MS * 2);
-    const t3 = setTimeout(() => setShowAchievements(true), FADE_IN_DELAY_MS * 3);
-    
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-    };
-  }, [getThemeFromDOM]); 
-
-  // MutationObserver to watch the <html> tag for theme class changes
-  useEffect(() => {
-    // The observer should only be active once mounted
-    if (!isMounted) return; 
-
-    const observer = new MutationObserver((mutationsList) => {
-      for (const mutation of mutationsList) {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-          const newIsDark = document.documentElement.classList.contains('dark');
-          // Only update if the value has actually changed to prevent unnecessary re-renders
-          if (newIsDark !== isDarkMode) {
-            setIsDarkMode(newIsDark);
-          }
-        }
-      }
-    });
-
-    // Observe the <html> element for attribute changes (specifically 'class')
-    observer.observe(document.documentElement, { attributes: true });
-
-    return () => observer.disconnect();
-  }, [isMounted, isDarkMode]);
-
-
-  const handleClick = useCallback((index: number) => {
-    setHighlight(index);
-    setTimeout(() => setHighlight(null), 800); 
-  }, []);
-
-  // SIMPLIFIED COLOR VARIABLES
-  const themeClasses = {
-    primaryAccent: isDarkMode 
-      ? "text-indigo-400 border-indigo-500"
-      : "text-indigo-600 border-indigo-600",
-    neutralText: isDarkMode 
-      ? "text-gray-300"
-      : "text-gray-700",
-    cardBackground: isDarkMode
-      ? "bg-gray-800/80 border border-gray-700 shadow-xl shadow-gray-950/50"
-      : "bg-white/80 border border-gray-200 shadow-lg shadow-gray-100/50",
-    highlightBackground: isDarkMode
-      ? "bg-gray-700/80 border-2 border-indigo-400"
-      : "bg-indigo-50/70 border-2 border-indigo-600",
-    chipBg: isDarkMode ? "bg-gray-700/40" : "bg-gray-100/80",
-    chipText: isDarkMode ? "text-gray-50" : "text-gray-800",
-    chipBorder: isDarkMode ? "border-gray-700/50" : "border-gray-300/80",
-    divider: isDarkMode ? 'border-gray-700' : 'border-gray-300',
-    cardDivider: isDarkMode ? 'border-gray-700/50' : 'border-gray-200/50',
-  }
-
+  const s0 = useFadeIn(80);
+  const s1 = useFadeIn(200);
+  const s2 = useFadeIn(380);
+  const s3 = useFadeIn(520);
 
   return (
-    // General text color for the container
-    <div className={`relative min-h-screen font-sans ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-      
-      {/* Main Content Area */}
-      <section className="relative w-full min-h-screen py-24 md:py-32 px-4 sm:px-8 flex flex-col items-center justify-center z-10">
-        
-        {/* FADE-IN STAGE 1: TITLE */}
-        <h1 
-          className={`text-5xl md:text-6xl font-extrabold mb-4 pb-3 border-b-4 
-            ${themeClasses.primaryAccent} 
-            transition-opacity duration-700 text-center uppercase tracking-wider ${showTitle ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
-        >
-          Education
-        </h1>
-        
-        {/* Introductory paragraph */}
-        <p 
-          className={`text-lg md:text-xl ${themeClasses.neutralText} mb-16 transition-opacity duration-700 delay-200 ${showTitle ? "opacity-100" : "opacity-0"}`}
-        >
-          My formal academic path and skill milestones.
-        </p>
-        
-        {/* FADE-IN STAGE 2: EDUCATION ITEMS (Card Grid) */}
-        <div 
-          className={`flex flex-col md:flex-row justify-center items-stretch gap-8 w-full max-w-6xl z-10 
-            transition-opacity duration-700 ${showItems ? "opacity-100" : "opacity-0"}`}
-        >
-          {EDUCATION_ITEMS.map((item, index) => {
-            const isHighlighted = highlight === index;
-            
-            return (
-              <div
-                key={index}
-                role="button"
-                aria-label={`Details for ${item.label}`}
-                onClick={() => handleClick(index)}
-                className={`flex flex-col flex-1 min-w-[280px] p-0 rounded-xl cursor-pointer transition-all duration-300 transform overflow-hidden 
-                  ${isHighlighted 
-                    ? `scale-[1.03] ${themeClasses.highlightBackground}` 
-                    : `${themeClasses.cardBackground} hover:scale-[1.02]`
-                  }
-                `}
-                style={{ transitionDelay: `${index * 100}ms` }}
-              >
-                {/* Card Header Section */}
-                <div className={`p-6 flex items-center justify-between border-b ${themeClasses.cardDivider}`}>
-                  {/* Header uses primaryAccent */}
-                  <h2 className={`text-xl font-bold tracking-wide ${themeClasses.primaryAccent.split(' ')[0]}`}>{item.label}</h2>
-                  <div className={`p-2 rounded-full ${themeClasses.primaryAccent.split(' ')[0]} ${isDarkMode ? 'bg-indigo-900/40' : 'bg-indigo-100/60'}`}>
-                    {item.icon}
-                  </div>
-                </div>
+    <div className="max-w-3xl mx-auto px-6 pt-16 pb-24">
 
-                {/* Card Body Section */}
-                <div className="p-6 flex flex-col justify-between flex-grow">
-                  {/* Body text uses neutralText */}
-                  <p className={`${themeClasses.neutralText} text-base leading-relaxed`}>{item.value}</p>
-                  
-                  {/* Details/CTA uses primaryAccent */}
-                  <div className={`mt-4 flex items-center justify-end ${themeClasses.primaryAccent.split(' ')[0]} font-semibold text-sm`}>
-                    Details
-                    <ChevronRight className="w-4 h-4 ml-1" />
-                  </div>
-                </div>
+      {/* ── Page label ── */}
+      <p
+        className={`text-xs font-medium uppercase tracking-widest mb-8 transition-all duration-700
+          ${dark ? "text-gray-500" : "text-gray-400"}
+          ${s0 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}
+      >
+        Education
+      </p>
+
+      {/* ── Heading ── */}
+      <div
+        className={`mb-12 transition-all duration-700
+          ${s1 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}
+      >
+        <h1 className={`text-3xl font-semibold mb-3 ${dark ? "text-white" : "text-gray-900"}`}>
+          Academic Background
+        </h1>
+        <p className={`text-sm leading-relaxed max-w-md ${dark ? "text-gray-400" : "text-gray-500"}`}>
+          My formal education path, from elementary through my current college studies in IT.
+        </p>
+      </div>
+
+      {/* ── Divider ── */}
+      <div className={`h-px w-full mb-12 ${dark ? "bg-white/6" : "bg-black/6"}`} />
+
+      {/* ── Education timeline ── */}
+      <div
+        className={`mb-12 transition-all duration-700
+          ${s2 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}
+      >
+        <p className={`text-xs font-medium uppercase tracking-widest mb-6 ${dark ? "text-gray-500" : "text-gray-400"}`}>
+          Schools
+        </p>
+        <div className="space-y-8">
+          {EDUCATION.map((item, i) => (
+            <div key={i} className="flex gap-5">
+              {/* Timeline dot */}
+              <div className="flex flex-col items-center pt-1">
+                <div className={`w-2 h-2 rounded-full mt-1 flex-shrink-0 ${dark ? "bg-blue-400" : "bg-blue-500"}`} />
+                {i < EDUCATION.length - 1 && (
+                  <div className={`w-px flex-1 mt-2 ${dark ? "bg-white/8" : "bg-black/8"}`} />
+                )}
               </div>
-            );
-          })}
-        </div>
-        
-        {/* FADE-IN STAGE 3: ACHIEVEMENTS */}
-        <div 
-          className={`mt-16 pt-8 border-t ${themeClasses.divider} w-full max-w-4xl flex flex-col items-center justify-center gap-4 z-10 
-            transition-opacity duration-700 ${showAchievements ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
-        >
-          <h3 className={`text-center text-xl font-semibold ${themeClasses.primaryAccent.split(' ')[0]} flex items-center gap-2`}>
-            <Zap className={`w-6 h-6 ${themeClasses.primaryAccent.split(' ')[0]}`}/> Core Achievements & Focus
-          </h3>
-          <div className="flex flex-wrap justify-center gap-3">
-            {EDUCATION_ACHIEVEMENTS.map((achieve, index) => {
-              return (
-                <div 
-                  key={index} 
-                  className={`${themeClasses.chipBg} px-4 py-1.5 rounded-full text-sm ${themeClasses.chipText} flex items-center gap-2 
-                    transition-all duration-300 font-medium border ${themeClasses.chipBorder}`}
-                >
-                  <Star className={`w-3 h-3 ${themeClasses.primaryAccent.split(' ')[0]}`}/>
-                  {achieve}
+
+              {/* Content */}
+              <div className="pb-8">
+                <div className="flex flex-wrap items-center gap-2 mb-1">
+                  <h2 className={`text-sm font-medium ${dark ? "text-white" : "text-gray-900"}`}>
+                    {item.school}
+                  </h2>
+                  <span className={`text-xs px-2 py-0.5 rounded-full border
+                    ${dark ? "text-gray-500 border-white/8" : "text-gray-400 border-black/8"}`}>
+                    {item.period}
+                  </span>
                 </div>
-              );
-            })}
-          </div>
+                <p className={`text-sm mb-2 ${dark ? "text-blue-400" : "text-blue-600"}`}>
+                  {item.degree}
+                </p>
+                {item.note && (
+                  <p className={`text-xs leading-relaxed ${dark ? "text-gray-500" : "text-gray-400"}`}>
+                    {item.note}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
-      </section>
+      </div>
+
+      {/* ── Divider ── */}
+      <div className={`h-px w-full mb-12 ${dark ? "bg-white/6" : "bg-black/6"}`} />
+
+      {/* ── Certifications ── */}
+      <div
+        className={`mb-12 transition-all duration-700
+          ${s3 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}
+      >
+        <p className={`text-xs font-medium uppercase tracking-widest mb-6 ${dark ? "text-gray-500" : "text-gray-400"}`}>
+          Certifications
+        </p>
+        <div className="space-y-3">
+          {CERTIFICATIONS.map((cert, i) => (
+            <div
+              key={i}
+              className={`flex items-center justify-between px-4 py-3 rounded-lg border
+                ${dark ? "border-white/8 bg-white/2" : "border-black/8 bg-black/2"}`}
+            >
+              <div>
+                <p className={`text-sm font-medium ${dark ? "text-white" : "text-gray-900"}`}>
+                  {cert.title}
+                </p>
+                <p className={`text-xs ${dark ? "text-gray-500" : "text-gray-400"}`}>
+                  {cert.issuer}
+                </p>
+              </div>
+              <span className={`text-xs ${dark ? "text-gray-600" : "text-gray-400"}`}>
+                {cert.year}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Divider ── */}
+      <div className={`h-px w-full mb-12 ${dark ? "bg-white/6" : "bg-black/6"}`} />
+
+      {/* ── Footer ── */}
+      <div className={`transition-all duration-700 ${s3 ? "opacity-100" : "opacity-0"}`}>
+        <p className={`text-xs ${dark ? "text-gray-600" : "text-gray-400"}`}>
+          Currently enrolled · Naga College Foundation · Expected graduation 2028
+        </p>
+      </div>
+
     </div>
   );
 }
