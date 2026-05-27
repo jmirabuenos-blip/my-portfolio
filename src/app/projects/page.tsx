@@ -28,6 +28,20 @@ function useFadeIn(delay = 0) {
 
 const PROJECTS = [
   {
+    name: "NCF Enrollment Portal",
+    desc: "A full-stack Django enrollment system for Nueva Caceres with role-based access for Admins, Staff, and Students. Features course management, department organization, and real-time enrollment tracking.",
+    tags: ["Django", "PostgreSQL", "Python", "WhiteNoise"],
+    url: "https://ncf-enrollment-portal.onrender.com/",
+    year: "2026",
+  },
+  {
+    name: "Minimalist E-Commerce Store",
+    desc: "A full-stack e-commerce platform with product listings, cart management, Stripe payment integration, and order tracking. Built with Next.js, Prisma ORM, and Neon Postgres.",
+    tags: ["Next.js", "Stripe", "Prisma", "PostgreSQL"],
+    url: "https://ecommerce-portfolio-sooty.vercel.app/",
+    year: "2026",
+  },
+  {
     name: "AIVA AI Studio",
     desc: "AI-powered creative platform with audio and video generation capabilities. Built with Next.js and deployed on Vercel.",
     tags: ["Next.js", "AI", "Vercel"],
