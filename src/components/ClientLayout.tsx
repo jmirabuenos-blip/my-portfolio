@@ -19,7 +19,7 @@ const DynamicBackground = memo(({ isMounted }: { isMounted: boolean }) => {
     left: `${(i * 7.1) % 100}%`,
     delay: `${(i % 8) * 0.4}s`,
     size: i % 3 === 0 ? "1.5px" : "1px",
-    opacity: i % 4 === 0 ? "0.25" : "0.12",
+    opacity: i % 4 === 0 ? "0.18" : "0.08",
   }));
 
   return (
@@ -27,7 +27,7 @@ const DynamicBackground = memo(({ isMounted }: { isMounted: boolean }) => {
       {dots.map((d, i) => (
         <div
           key={i}
-          className="absolute rounded-full bg-blue-400 animate-pulse-dot"
+          className="absolute rounded-full animate-pulse-dot"
           style={{
             top: d.top,
             left: d.left,
@@ -35,6 +35,7 @@ const DynamicBackground = memo(({ isMounted }: { isMounted: boolean }) => {
             height: d.size,
             opacity: d.opacity,
             animationDelay: d.delay,
+            background: "#b5956a",
           }}
         />
       ))}
@@ -51,7 +52,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  // Initialize theme from localStorage or system preference
   useEffect(() => {
     const stored = localStorage.getItem("theme") as "dark" | "light" | null;
     const initial =
@@ -61,7 +61,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     document.documentElement.classList.add(initial);
   }, []);
 
-  // Apply theme changes after mount
   useEffect(() => {
     if (!mounted) return;
     document.documentElement.classList.remove("light", "dark");
@@ -69,7 +68,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  // Mount + scroll listener
   useEffect(() => {
     setMounted(true);
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -77,7 +75,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close mobile menu on route change
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
@@ -90,11 +87,11 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     return `px-3 py-1.5 rounded-md text-sm transition-colors duration-200
       ${isActive
         ? dark
-          ? "text-white bg-white/8"
-          : "text-gray-900 bg-black/6"
+          ? "text-[#f0ebe2] bg-[#2a2318]"
+          : "text-[#2c2825] bg-[#ede4d7]"
         : dark
-          ? "text-gray-400 hover:text-white hover:bg-white/5"
-          : "text-gray-500 hover:text-gray-900 hover:bg-black/5"
+          ? "text-[#6a6058] hover:text-[#c9a96e] hover:bg-[#1e1a14]"
+          : "text-[#9a8f83] hover:text-[#2c2825] hover:bg-[#f0ebe3]"
       }`;
   };
 
@@ -103,28 +100,33 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     return `px-3 py-2 rounded-md text-sm transition-colors
       ${isActive
         ? dark
-          ? "text-white bg-white/8"
-          : "text-gray-900 bg-black/6"
+          ? "text-[#f0ebe2] bg-[#2a2318]"
+          : "text-[#2c2825] bg-[#ede4d7]"
         : dark
-          ? "text-gray-400 hover:text-white hover:bg-white/5"
-          : "text-gray-600 hover:text-gray-900 hover:bg-black/5"
+          ? "text-[#6a6058] hover:text-[#c9a96e] hover:bg-[#1e1a14]"
+          : "text-[#9a8f83] hover:text-[#2c2825] hover:bg-[#f0ebe3]"
       }`;
   };
 
   return (
     <div
-      className={`relative w-full min-h-screen overflow-x-hidden font-sans
-        ${dark ? "bg-[#060912] text-white" : "bg-[#f8f9fc] text-gray-900"}`}
+      className={`relative w-full min-h-screen overflow-x-hidden`}
+      style={{
+        fontFamily: "var(--font-dm-sans), sans-serif",
+        background: dark ? "#0f0d0a" : "#faf8f5",
+        color: dark ? "#f0ebe2" : "#2c2825",
+      }}
     >
       {/* ── Background ── */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         {dark && <DynamicBackground isMounted={mounted} />}
+        {/* Warm radial glow */}
         <div
           className="absolute inset-0"
           style={{
             background: dark
-              ? "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(59,130,246,0.08) 0%, transparent 70%)"
-              : "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(59,130,246,0.05) 0%, transparent 70%)",
+              ? "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(181,149,106,0.06) 0%, transparent 70%)"
+              : "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(181,149,106,0.08) 0%, transparent 70%)",
           }}
         />
       </div>
@@ -134,19 +136,24 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-300
           ${scrolled
             ? dark
-              ? "py-3 bg-[#060912]/90 backdrop-blur-xl border-b border-white/5"
-              : "py-3 bg-white/90 backdrop-blur-xl border-b border-black/5 shadow-sm"
+              ? "py-3 backdrop-blur-xl border-b"
+              : "py-3 backdrop-blur-xl border-b shadow-sm"
             : "py-5"
           }`}
+        style={scrolled ? {
+          background: dark ? "rgba(15,13,10,0.92)" : "rgba(250,248,245,0.92)",
+          borderColor: dark ? "rgba(181,149,106,0.1)" : "rgba(181,149,106,0.15)",
+        } : {}}
       >
         <div className="max-w-5xl mx-auto px-6 flex items-center justify-between">
           {/* Logo */}
           <a
             href="/"
-            className={`text-lg font-semibold tracking-tight ${dark ? "text-white" : "text-gray-900"}`}
+            className="text-lg font-semibold tracking-tight"
+            style={{ fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 400 }}
           >
-            <span className={dark ? "text-blue-400" : "text-blue-600"}>Mer</span>
-            <span className={dark ? "text-white/40" : "text-gray-400"}>.dev</span>
+            <span style={{ color: dark ? "#c9a96e" : "#b5956a" }}>Mer</span>
+            <span style={{ color: dark ? "rgba(240,235,226,0.35)" : "rgba(44,40,37,0.3)" }}>.dev</span>
           </a>
 
           {/* Desktop links */}
@@ -159,15 +166,15 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
               </li>
             ))}
 
-            <li className={`ml-3 pl-3 border-l ${dark ? "border-white/10" : "border-black/10"}`}>
+            <li
+              className="ml-3 pl-3 border-l"
+              style={{ borderColor: dark ? "rgba(181,149,106,0.15)" : "rgba(181,149,106,0.2)" }}
+            >
               <button
                 onClick={toggleTheme}
                 aria-label="Toggle theme"
-                className={`w-8 h-8 flex items-center justify-center rounded-md transition-colors
-                  ${dark
-                    ? "text-gray-400 hover:text-white hover:bg-white/5"
-                    : "text-gray-500 hover:text-gray-900 hover:bg-black/5"
-                  }`}
+                className="w-8 h-8 flex items-center justify-center rounded-md transition-colors"
+                style={{ color: dark ? "#6a6058" : "#9a8f83" }}
               >
                 {dark ? (
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -192,11 +199,12 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
             <li className="ml-1">
               <a
                 href="/contact"
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors
-                  ${dark
-                    ? "bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20"
-                    : "bg-blue-50 text-blue-600 border border-blue-200/80 hover:bg-blue-100"
-                  }`}
+                className="px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 border"
+                style={{
+                  background: dark ? "rgba(181,149,106,0.08)" : "rgba(181,149,106,0.1)",
+                  color: dark ? "#c9a96e" : "#8a6e48",
+                  borderColor: dark ? "rgba(181,149,106,0.2)" : "rgba(181,149,106,0.3)",
+                }}
               >
                 Hire me
               </a>
@@ -208,8 +216,8 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
             <button
               onClick={toggleTheme}
               aria-label="Toggle theme"
-              className={`w-8 h-8 flex items-center justify-center rounded-md
-                ${dark ? "text-gray-400" : "text-gray-500"}`}
+              className="w-8 h-8 flex items-center justify-center rounded-md"
+              style={{ color: dark ? "#6a6058" : "#9a8f83" }}
             >
               {dark ? (
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -228,8 +236,8 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
             <button
               onClick={() => setMenuOpen((p) => !p)}
               aria-label="Toggle menu"
-              className={`w-8 h-8 flex items-center justify-center rounded-md
-                ${dark ? "text-gray-400" : "text-gray-500"}`}
+              className="w-8 h-8 flex items-center justify-center rounded-md"
+              style={{ color: dark ? "#6a6058" : "#9a8f83" }}
             >
               {menuOpen ? (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -250,25 +258,25 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         {/* Mobile dropdown */}
         {menuOpen && (
           <div
-            className={`md:hidden border-t mt-3 px-6 py-4 flex flex-col gap-1
-              ${dark ? "border-white/5 bg-[#060912]/95" : "border-black/5 bg-white/95"}`}
+            className="md:hidden border-t mt-3 px-6 py-4 flex flex-col gap-1"
+            style={{
+              borderColor: dark ? "rgba(181,149,106,0.1)" : "rgba(181,149,106,0.15)",
+              background: dark ? "rgba(15,13,10,0.97)" : "rgba(250,248,245,0.97)",
+            }}
           >
             {navItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className={mobileNavLinkClass(item.href)}
-              >
+              <a key={item.name} href={item.href} className={mobileNavLinkClass(item.href)}>
                 {item.name}
               </a>
             ))}
             <a
               href="/contact"
-              className={`mt-2 px-3 py-2 rounded-md text-sm font-medium text-center
-                ${dark
-                  ? "bg-blue-500/10 text-blue-400 border border-blue-500/20"
-                  : "bg-blue-50 text-blue-600 border border-blue-200"
-                }`}
+              className="mt-2 px-3 py-2 rounded-md text-sm font-medium text-center border"
+              style={{
+                background: dark ? "rgba(181,149,106,0.08)" : "rgba(181,149,106,0.1)",
+                color: dark ? "#c9a96e" : "#8a6e48",
+                borderColor: dark ? "rgba(181,149,106,0.2)" : "rgba(181,149,106,0.25)",
+              }}
             >
               Hire me
             </a>

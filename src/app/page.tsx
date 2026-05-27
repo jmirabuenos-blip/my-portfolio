@@ -41,59 +41,83 @@ export default function Page() {
   const dark = theme === "dark";
 
   const s0 = useFadeIn(80);
-  const s1 = useFadeIn(220);
-  const s2 = useFadeIn(380);
-  const s3 = useFadeIn(520);
-  const s4 = useFadeIn(660);
+  const s1 = useFadeIn(250);
+  const s2 = useFadeIn(420);
+  const s3 = useFadeIn(560);
+  const s4 = useFadeIn(700);
+  const s5 = useFadeIn(900);
 
   return (
-    <div className="max-w-4xl mx-auto px-6 pt-16 pb-24">
+    <div
+      className="max-w-4xl mx-auto px-8 pt-14 pb-20"
+      style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
+    >
+      <style>{`
+        @keyframes ping-warm {
+          0%   { transform: scale(1); opacity: 0.6; }
+          100% { transform: scale(2.2); opacity: 0; }
+        }
+        .ping-warm { animation: ping-warm 1.6s ease infinite; }
+      `}</style>
 
-      {/* ── Hero: split layout ── */}
-      <div className="flex flex-col-reverse md:flex-row md:items-start md:justify-between gap-10 mb-16">
+      {/* ── Hero ── */}
+      <div className="flex flex-col-reverse md:flex-row md:items-center md:justify-between gap-10 mb-10">
 
         {/* Left: text */}
         <div className="flex-1">
-          {/* Availability */}
+
+          {/* Availability badge */}
           <div
-            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium border mb-6 transition-all duration-700
-              ${dark ? "bg-green-500/8 border-green-500/20 text-green-400" : "bg-green-50 border-green-200 text-green-700"}
+            className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-normal border mb-6 transition-all duration-700
+              ${dark
+                ? "bg-[#2a2318] border-[#4a3a25] text-[#c9a96e]"
+                : "bg-[#f5efe6] border-[#e2d4be] text-[#8a6e48]"}
               ${s0 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}
+            style={{ letterSpacing: "0.02em" }}
           >
-            <span className="relative flex h-1.5 w-1.5">
-              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${dark ? "bg-green-400" : "bg-green-500"}`} />
-              <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${dark ? "bg-green-400" : "bg-green-500"}`} />
+            <span className="relative flex h-2 w-2">
+              <span className={`ping-warm absolute inline-flex h-full w-full rounded-full ${dark ? "bg-[#c9a96e]" : "bg-[#b5956a]"}`} />
+              <span className={`relative inline-flex rounded-full h-2 w-2 ${dark ? "bg-[#c9a96e]" : "bg-[#b5956a]"}`} />
             </span>
             Open to opportunities
           </div>
 
           {/* Name */}
           <h1
-            className={`text-4xl sm:text-5xl font-semibold tracking-tight leading-tight mb-3 transition-all duration-700
-              ${dark ? "text-white" : "text-gray-900"}
+            className={`mb-2 transition-all duration-700
+              ${dark ? "text-[#f0ebe2]" : "text-[#1e1a16]"}
               ${s1 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}
+            style={{
+              fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+              fontWeight: 300,
+              fontSize: "clamp(44px, 6vw, 58px)",
+              lineHeight: 1.08,
+              letterSpacing: "-0.01em",
+            }}
           >
-            Jaymer Mirabuenos
+            Jaymer<br />Mirabuenos
           </h1>
 
           {/* Role */}
           <p
-            className={`text-lg font-normal mb-5 transition-all duration-700
-              ${dark ? "text-blue-400" : "text-blue-600"}
+            className={`text-xs mb-5 transition-all duration-700
+              ${dark ? "text-[#c9a96e]" : "text-[#b5956a]"}
               ${s1 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}
+            style={{ letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 400 }}
           >
-            Frontend Developer · IT Student
+            Junior Full Stack Developer &nbsp;·&nbsp; IT Student
           </p>
 
           {/* Bio */}
           <p
-            className={`text-[15px] leading-relaxed max-w-md mb-8 transition-all duration-700
-              ${dark ? "text-gray-400" : "text-gray-500"}
+            className={`text-[15px] leading-relaxed max-w-sm mb-8 transition-all duration-700
+              ${dark ? "text-[#9e9187]" : "text-[#6b5f52]"}
               ${s2 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}
+            style={{ fontWeight: 300 }}
           >
-            2nd-year IT student from the Philippines crafting modern, responsive web
-            experiences. Passionate about clean UI, thoughtful interactions, and
-            continuously leveling up my craft.
+            2nd-year IT student from the Philippines crafting modern, responsive
+            web experiences. Passionate about clean UI, thoughtful interactions,
+            and continuously leveling up my craft.
           </p>
 
           {/* CTAs */}
@@ -103,20 +127,24 @@ export default function Page() {
           >
             <a
               href="/projects"
-              className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-500 transition-colors"
+              className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-md text-[13px] font-medium transition-all duration-200 hover:-translate-y-px
+                ${dark
+                  ? "bg-[#f0ebe2] text-[#1e1a16] hover:bg-white"
+                  : "bg-[#2c2825] text-[#faf8f5] hover:bg-[#1a1714]"}`}
+              style={{ letterSpacing: "0.02em" }}
             >
               View projects
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-200 group-hover:translate-x-0.5">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </a>
             <a
               href="/contact"
-              className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium border transition-colors
+              className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-md text-[13px] font-normal border transition-all duration-200 hover:-translate-y-px
                 ${dark
-                  ? "text-gray-300 border-white/10 hover:bg-white/5 hover:border-white/20"
-                  : "text-gray-600 border-black/10 hover:bg-black/4 hover:border-black/20"
-                }`}
+                  ? "text-[#9e9187] border-[#3a3028] hover:border-[#5a4a38] hover:text-[#c9a96e]"
+                  : "text-[#6b5f52] border-[#e0d4c0] hover:border-[#c9b99e] hover:text-[#2c2825]"}`}
+              style={{ letterSpacing: "0.02em" }}
             >
               Let's talk
             </a>
@@ -128,41 +156,58 @@ export default function Page() {
           className={`flex-shrink-0 transition-all duration-700
             ${s1 ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
         >
-          <div className="relative">
+          {/* Outer wrapper creates space for the offset border */}
+          <div className="relative w-48 h-56 md:w-56 md:h-64 mr-3 mb-3">
+            {/* Corner accent */}
             <div
-              className={`w-44 h-44 md:w-52 md:h-52 rounded-2xl overflow-hidden border
-                ${dark ? "border-white/10" : "border-black/8"}`}
-            >
-              <img
-                src="https://i.imgur.com/Y9RkFD3.jpeg"
-                alt="Jaymer Mirabuenos"
-                className="w-full h-full object-cover object-center"
-              />
-            </div>
-            {/* Decorative corner accent */}
+              className={`absolute -top-3 -left-3 w-7 h-7 border-t border-l
+                ${dark ? "border-[#c9a96e]/50" : "border-[#b5956a]/60"}`}
+              style={{ borderRadius: "2px 0 0 0" }}
+            />
+            {/* Photo */}
+            <img
+              src="https://i.imgur.com/Y9RkFD3.jpeg"
+              alt="Jaymer Mirabuenos"
+              className="w-full h-full object-cover object-top rounded-xl relative z-10"
+              style={{ filter: "sepia(6%) saturate(90%)" }}
+            />
+            {/* Offset border — pushed out with absolute positioning */}
             <div
-              className={`absolute -bottom-2 -right-2 w-full h-full rounded-2xl border -z-10
-                ${dark ? "border-blue-500/20" : "border-blue-300/40"}`}
+              className={`absolute top-3 left-3 w-full h-full rounded-xl border
+                ${dark ? "border-[#4a3a25]" : "border-[#d4c4aa]"}`}
+              style={{ zIndex: 0 }}
             />
           </div>
         </div>
       </div>
 
       {/* ── Divider ── */}
-      <div className={`h-px w-full mb-10 ${dark ? "bg-white/6" : "bg-black/6"}`} />
+      <div
+        className={`h-px w-full mb-8 transition-all duration-700
+          ${s4 ? "opacity-100" : "opacity-0"}`}
+        style={{
+          background: dark
+            ? "linear-gradient(to right, transparent, #3a3028 30%, #3a3028 70%, transparent)"
+            : "linear-gradient(to right, transparent, #e0d4c0 30%, #e0d4c0 70%, transparent)",
+        }}
+      />
 
       {/* ── Skills ── */}
       <div
-        className={`transition-all duration-700
+        className={`mb-14 transition-all duration-700
           ${s4 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}
       >
         <div className="flex items-center justify-between mb-4">
-          <p className={`text-xs font-medium uppercase tracking-widest ${dark ? "text-gray-500" : "text-gray-400"}`}>
+          <p
+            className={`text-[10px] font-medium ${dark ? "text-[#c9a96e]" : "text-[#b5956a]"}`}
+            style={{ letterSpacing: "0.22em", textTransform: "uppercase" }}
+          >
             Tech Stack
           </p>
           <a
             href="/about"
-            className={`text-xs transition-colors ${dark ? "text-gray-600 hover:text-gray-400" : "text-gray-400 hover:text-gray-600"}`}
+            className={`text-[12px] transition-colors ${dark ? "text-[#5a5048] hover:text-[#9e9187]" : "text-[#c4b9aa] hover:text-[#6b5f52]"}`}
+            style={{ letterSpacing: "0.04em" }}
           >
             View full profile →
           </a>
@@ -171,15 +216,16 @@ export default function Page() {
           {SKILLS.map((s) => (
             <span
               key={s.label}
-              className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors
+              className={`px-4 py-1.5 rounded-full text-[12.5px] border transition-all duration-200 cursor-default
                 ${s.highlight
                   ? dark
-                    ? "bg-blue-500/10 text-blue-400 border-blue-500/20"
-                    : "bg-blue-50 text-blue-600 border-blue-200/80"
+                    ? "bg-[#2a2318] border-[#4a3a25] text-[#c9a96e] hover:bg-[#332b1e] hover:border-[#6a5035]"
+                    : "bg-[#f5efe6] border-[#ddd0ba] text-[#7a6045] hover:bg-[#ede4d7] hover:border-[#c9b99e]"
                   : dark
-                    ? "bg-white/4 text-gray-400 border-white/8 hover:border-white/15"
-                    : "bg-black/3 text-gray-500 border-black/8 hover:border-black/15"
+                    ? "bg-transparent border-[#2e2822] text-[#6a6058] hover:border-[#4a3a28] hover:text-[#9e9187]"
+                    : "bg-transparent border-[#e5ddd4] text-[#9a8f83] hover:bg-[#f5f0ea] hover:border-[#d4c9bc] hover:text-[#6b5f52]"
                 }`}
+              style={{ fontWeight: 400 }}
             >
               {s.label}
             </span>
@@ -189,15 +235,28 @@ export default function Page() {
 
       {/* ── Footer ── */}
       <div
-        className={`mt-16 pt-8 border-t transition-all duration-700
-          ${dark ? "border-white/6" : "border-black/6"}
-          ${s4 ? "opacity-100" : "opacity-0"}`}
+        className={`pt-6 border-t flex items-center justify-between transition-all duration-700
+          ${dark ? "border-[#2a2520]" : "border-[#ece5da]"}
+          ${s5 ? "opacity-100" : "opacity-0"}`}
       >
-        <p className={`text-xs ${dark ? "text-gray-600" : "text-gray-400"}`}>
-          Based in the Philippines · Built with Next.js & Tailwind CSS
+        <p
+          className={`text-[12px] ${dark ? "text-[#4a4038]" : "text-[#c4b9aa]"}`}
+          style={{ letterSpacing: "0.03em" }}
+        >
+          Based in the Philippines &nbsp;·&nbsp; Built with Next.js & Tailwind CSS
         </p>
+        <span
+          className={`${dark ? "text-[#4a4038]" : "text-[#d4c8b8]"}`}
+          style={{
+            fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            fontSize: "18px",
+            letterSpacing: "0.05em",
+          }}
+        >
+          jm.
+        </span>
       </div>
-
     </div>
   );
 }

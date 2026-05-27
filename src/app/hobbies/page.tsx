@@ -61,7 +61,6 @@ const HOBBIES = [
   },
 ];
 
-type MediaItem = { type: "image" | "video"; src: string };
 type LightboxState = { hobby: typeof HOBBIES[0]; idx: number } | null;
 
 function Lightbox({ state, onClose }: { state: LightboxState; onClose: () => void }) {
@@ -69,9 +68,7 @@ function Lightbox({ state, onClose }: { state: LightboxState; onClose: () => voi
   const dark = theme === "dark";
   const [idx, setIdx] = useState(state?.idx ?? 0);
 
-  useEffect(() => {
-    setIdx(state?.idx ?? 0);
-  }, [state]);
+  useEffect(() => { setIdx(state?.idx ?? 0); }, [state]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -90,11 +87,17 @@ function Lightbox({ state, onClose }: { state: LightboxState; onClose: () => voi
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: "rgba(15,13,10,0.88)", backdropFilter: "blur(8px)" }}
       onClick={onClose}
     >
       <div
-        className={`relative rounded-xl overflow-hidden max-w-2xl w-full shadow-2xl ${dark ? "bg-[#0a0f1e]" : "bg-white"}`}
+        className="relative rounded-xl overflow-hidden max-w-2xl w-full"
+        style={{
+          background: dark ? "#1a1510" : "#faf8f5",
+          border: `1px solid ${dark ? "rgba(181,149,106,0.15)" : "rgba(181,149,106,0.25)"}`,
+          boxShadow: "0 32px 64px rgba(0,0,0,0.4)",
+        }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Media */}
@@ -105,18 +108,19 @@ function Lightbox({ state, onClose }: { state: LightboxState; onClose: () => voi
             <video src={item.src} controls autoPlay className="w-full max-h-[70vh]" />
           )}
 
-          {/* Nav arrows */}
           {hasMultiple && (
             <>
               <button
                 onClick={() => setIdx((i) => (i - 1 + state.hobby.media.length) % state.hobby.media.length)}
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full transition-colors text-lg"
+                style={{ background: "rgba(15,13,10,0.6)", color: "#c9a96e" }}
               >
                 ‹
               </button>
               <button
                 onClick={() => setIdx((i) => (i + 1) % state.hobby.media.length)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full transition-colors text-lg"
+                style={{ background: "rgba(15,13,10,0.6)", color: "#c9a96e" }}
               >
                 ›
               </button>
@@ -125,22 +129,36 @@ function Lightbox({ state, onClose }: { state: LightboxState; onClose: () => voi
         </div>
 
         {/* Footer */}
-        <div className={`px-5 py-3 flex items-center justify-between ${dark ? "border-t border-white/8" : "border-t border-black/8"}`}>
-          <p className={`text-sm font-medium ${dark ? "text-white" : "text-gray-900"}`}>
+        <div
+          className="px-5 py-3 flex items-center justify-between"
+          style={{ borderTop: `1px solid ${dark ? "rgba(181,149,106,0.12)" : "rgba(181,149,106,0.18)"}` }}
+        >
+          <p
+            className="text-sm font-medium"
+            style={{ color: dark ? "#f0ebe2" : "#1e1a16" }}
+          >
             {state.hobby.title}
           </p>
           {hasMultiple && (
-            <p className={`text-xs ${dark ? "text-gray-500" : "text-gray-400"}`}>
+            <p
+              className="text-[11px]"
+              style={{
+                color: dark ? "#6a5a48" : "#b5956a",
+                fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+                fontStyle: "italic",
+              }}
+            >
               {idx + 1} / {state.hobby.media.length}
             </p>
           )}
         </div>
       </div>
 
-      {/* Close button */}
+      {/* Close */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors text-lg"
+        className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full text-lg transition-colors"
+        style={{ background: "rgba(15,13,10,0.6)", color: "#c9a96e" }}
       >
         ×
       </button>
@@ -157,14 +175,27 @@ export default function HobbiesPage() {
   const s1 = useFadeIn(200);
   const s2 = useFadeIn(350);
 
-  return (
-    <div className="max-w-3xl mx-auto px-6 pt-16 pb-24">
+  const divider = (
+    <div
+      className="h-px w-full"
+      style={{
+        background: dark
+          ? "linear-gradient(to right, transparent, #3a3028 30%, #3a3028 70%, transparent)"
+          : "linear-gradient(to right, transparent, #e0d4c0 30%, #e0d4c0 70%, transparent)",
+      }}
+    />
+  );
 
+  return (
+    <div
+      className="max-w-3xl mx-auto px-8 pt-14 pb-24"
+      style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
+    >
       {/* ── Page label ── */}
       <p
-        className={`text-xs font-medium uppercase tracking-widest mb-8 transition-all duration-700
-          ${dark ? "text-gray-500" : "text-gray-400"}
+        className={`text-[10px] font-medium uppercase mb-10 transition-all duration-700
           ${s0 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}
+        style={{ letterSpacing: "0.22em", color: dark ? "#c9a96e" : "#b5956a" }}
       >
         Hobbies
       </p>
@@ -174,79 +205,130 @@ export default function HobbiesPage() {
         className={`mb-12 transition-all duration-700
           ${s1 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}
       >
-        <h1 className={`text-3xl font-semibold mb-3 ${dark ? "text-white" : "text-gray-900"}`}>
+        <h1
+          className="mb-3"
+          style={{
+            fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+            fontWeight: 300,
+            fontSize: "clamp(32px, 5vw, 44px)",
+            lineHeight: 1.1,
+            color: dark ? "#f0ebe2" : "#1e1a16",
+          }}
+        >
           Outside of Code
         </h1>
-        <p className={`text-sm leading-relaxed max-w-md ${dark ? "text-gray-400" : "text-gray-500"}`}>
+        <p
+          className="text-[15px] leading-relaxed max-w-md"
+          style={{ fontWeight: 300, color: dark ? "#9e9187" : "#6b5f52" }}
+        >
           Things I do when I'm not in front of a screen — or sometimes while I am.
         </p>
       </div>
 
-      {/* ── Divider ── */}
-      <div className={`h-px w-full mb-12 ${dark ? "bg-white/6" : "bg-black/6"}`} />
-
       {/* ── Hobbies ── */}
       <div
-        className={`space-y-14 transition-all duration-700
+        className={`transition-all duration-700
           ${s2 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}
       >
         {HOBBIES.map((hobby, hi) => (
           <div key={hobby.title}>
-            {/* Title + desc */}
-            <h2 className={`text-base font-medium mb-1 ${dark ? "text-white" : "text-gray-900"}`}>
-              {hobby.title}
-            </h2>
-            <p className={`text-sm mb-4 ${dark ? "text-gray-500" : "text-gray-400"}`}>
-              {hobby.desc}
-            </p>
+            {divider}
 
-            {/* Media grid */}
-            {hobby.media.length > 0 && (
-              <div className={`grid gap-2 ${hobby.media.length === 1 ? "grid-cols-1" : hobby.media.length === 2 ? "grid-cols-2" : "grid-cols-2 sm:grid-cols-3"}`}>
-                {hobby.media.map((item, mi) => (
-                  <button
-                    key={mi}
-                    onClick={() => setLightbox({ hobby, idx: mi })}
-                    className={`relative overflow-hidden rounded-lg aspect-video group border
-                      ${dark ? "border-white/8" : "border-black/8"}`}
-                  >
-                    {item.type === "image" ? (
-                      <img
-                        src={item.src}
-                        alt={hobby.title}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="w-full h-full relative bg-black">
-                        <video
+            <div className="py-12">
+              {/* Index + title */}
+              <div className="flex items-baseline gap-4 mb-2">
+                <span
+                  style={{
+                    fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+                    fontStyle: "italic",
+                    fontSize: "13px",
+                    color: dark ? "#4a3a25" : "#c4b9aa",
+                  }}
+                >
+                  0{hi + 1}
+                </span>
+                <h2
+                  className="text-base font-medium"
+                  style={{ color: dark ? "#f0ebe2" : "#1e1a16" }}
+                >
+                  {hobby.title}
+                </h2>
+              </div>
+
+              <p
+                className="text-[13.5px] mb-5 ml-8"
+                style={{ fontWeight: 300, color: dark ? "#7a7068" : "#8a8078" }}
+              >
+                {hobby.desc}
+              </p>
+
+              {/* Media grid */}
+              {hobby.media.length > 0 && (
+                <div
+                  className={`grid gap-2 ml-8 ${
+                    hobby.media.length === 1
+                      ? "grid-cols-1"
+                      : hobby.media.length === 2
+                      ? "grid-cols-2"
+                      : "grid-cols-2 sm:grid-cols-3"
+                  }`}
+                >
+                  {hobby.media.map((item, mi) => (
+                    <button
+                      key={mi}
+                      onClick={() => setLightbox({ hobby, idx: mi })}
+                      className="relative overflow-hidden rounded-lg aspect-video group border transition-all duration-200 hover:-translate-y-0.5"
+                      style={{
+                        borderColor: dark ? "rgba(181,149,106,0.12)" : "rgba(181,149,106,0.2)",
+                      }}
+                      onMouseEnter={e => {
+                        (e.currentTarget as HTMLElement).style.borderColor = dark
+                          ? "rgba(181,149,106,0.3)"
+                          : "rgba(181,149,106,0.4)";
+                      }}
+                      onMouseLeave={e => {
+                        (e.currentTarget as HTMLElement).style.borderColor = dark
+                          ? "rgba(181,149,106,0.12)"
+                          : "rgba(181,149,106,0.2)";
+                      }}
+                    >
+                      {item.type === "image" ? (
+                        <img
                           src={item.src}
-                          className="w-full h-full object-cover opacity-80"
-                          muted
+                          alt={hobby.title}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          style={{ filter: "sepia(4%) saturate(90%)" }}
                         />
-                        {/* Play icon overlay */}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="w-10 h-10 rounded-full bg-black/50 flex items-center justify-center group-hover:bg-black/70 transition-colors">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-                              <polygon points="5 3 19 12 5 21 5 3"/>
-                            </svg>
+                      ) : (
+                        <div className="w-full h-full relative bg-black">
+                          <video
+                            src={item.src}
+                            className="w-full h-full object-cover opacity-80"
+                            muted
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div
+                              className="w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+                              style={{ background: "rgba(181,149,106,0.25)" }}
+                            >
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="#c9a96e">
+                                <polygon points="5 3 19 12 5 21 5 3"/>
+                              </svg>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {/* Divider between hobbies */}
-            {hi < HOBBIES.length - 1 && (
-              <div className={`h-px w-full mt-14 ${dark ? "bg-white/6" : "bg-black/6"}`} />
-            )}
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         ))}
+
+        {divider}
       </div>
 
-      {/* Lightbox */}
       <Lightbox state={lightbox} onClose={() => setLightbox(null)} />
     </div>
   );
