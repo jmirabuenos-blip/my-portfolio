@@ -5,16 +5,17 @@ import { useReveal } from "@/hooks/useReveal";
 
 const TYPING_ROLES = [
   "frontend developer",
-  "IT student",
-  "React & Next.js builder",
-  "UI enthusiast",
-  "lifelong learner",
+  "full stack engineer",
+  "React & Next.js specialist",
+  "UI/UX practitioner",
+  "AI-assisted developer",
 ];
 
 const SKILLS_MARQUEE = [
   "React", "Next.js", "TypeScript", "Tailwind CSS", "Git", "Vercel",
   "REST APIs", "Vite", "UI/UX", "JavaScript", "HTML5", "CSS3",
   "Python", "Django", "PostgreSQL", "Prisma",
+  "Prompt Engineering", "AI APIs", "LLM Integration", "GitHub Copilot", "Cursor",
 ];
 
 const SCATTERED_IMAGES = [
@@ -165,7 +166,7 @@ export default function Page() {
               border: `1px solid ${dark ? "rgba(34,197,94,0.15)" : "rgba(22,163,74,0.12)"}`,
             }}
           >
-            <span style={{ opacity: 0.5 }}>{"$>"}</span> open to opportunities
+            <span style={{ opacity: 0.5 }}>{"$>"}</span> available for opportunities
           </div>
 
           {/* Giant headline */}
@@ -229,7 +230,7 @@ export default function Page() {
                 background: dark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.03)",
               }}
             >
-              Let&apos;s talk
+              Get in touch
             </a>
           </div>
         </div>

@@ -91,14 +91,14 @@ export default function ContactPage() {
             color: dark ? "#fafafa" : "#0a0a0a",
           }}
         >
-          Let&apos;s work together
+          Work with me
         </h1>
         <p
           className="text-[14px] leading-relaxed max-w-md"
           style={{ color: dark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)" }}
         >
-          Open to freelance projects, internships, collabs, or just a chat.
-          Reach out through any of the platforms below.
+          Available for freelance projects, internships, and professional
+          collaborations. Reach out through any of the platforms below.
         </p>
       </div>
 
@@ -202,7 +202,7 @@ export default function ContactPage() {
               color: dark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)",
             }}
           >
-            hint: or just reach out directly ↓
+            or connect directly via the links below ↓
           </span>
           <button
             className="px-5 py-2 rounded-lg text-[13px] font-semibold transition-all duration-200 hover:scale-[1.03]"

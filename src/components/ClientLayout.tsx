@@ -23,6 +23,7 @@ const SKILLS_MARQUEE = [
   "React", "Next.js", "TypeScript", "Tailwind CSS", "Git", "Vercel",
   "REST APIs", "Vite", "UI/UX", "JavaScript", "HTML5", "CSS3",
   "Python", "Django", "PostgreSQL", "Prisma",
+  "Prompt Engineering", "AI APIs", "LLM Integration", "GitHub Copilot", "Cursor",
 ];
 
 /* ─── Command Palette ─── */

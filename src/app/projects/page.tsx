@@ -78,13 +78,14 @@ export default function ProjectsPage() {
             color: dark ? "#fafafa" : "#0a0a0a",
           }}
         >
-          Things I&apos;ve built
+          Selected projects
         </h1>
         <p
           className="text-[14px] leading-relaxed max-w-md"
           style={{ color: dark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)" }}
         >
-          A small but growing collection of real projects I&apos;ve shipped.
+          A collection of projects demonstrating technical experience across
+          frontend and full-stack development.
         </p>
       </div>
 

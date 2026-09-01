@@ -48,21 +48,21 @@ const CERTIFICATIONS = [
 const GIT_DIFFS: Record<string, string[]> = {
   "Naga College Foundation": [
     "+ learned React, Next.js, TypeScript",
-    "+ built 4+ production projects",
-    "- sleep schedule",
-    "~ understanding of full-stack architecture",
+    "+ built 4+ production-grade projects",
+    "+ proficiency in full-stack architecture",
+    "~ ongoing: backend systems & DevOps",
   ],
   "Carolina National High School": [
     "+ NC II TESDA certification",
-    "+ discovered passion for web development",
-    "- fear of terminal commands",
+    "+ introduced to web development fundamentals",
+    "+ developed interest in software engineering",
   ],
   "Panicuason Elementary School": [
-    "+ foundations of everything",
+    "+ foundational academic skills established",
   ],
   "Microsoft Word Associate": [
     "+ certified Microsoft Word proficiency",
-    "+ global recognition",
+    "+ globally recognized credential",
   ],
   "NC II Certificate": [
     "+ TESDA NC II certified",
@@ -104,7 +104,7 @@ export default function EducationPage() {
           className="text-[14px] leading-relaxed max-w-md"
           style={{ color: dark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)" }}
         >
-          My formal education path — each entry is a commit in the journey.
+          My formal education path — each entry is a commit in the timeline.
         </p>
       </div>
 

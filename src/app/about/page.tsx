@@ -3,15 +3,57 @@ import { useTheme } from "@/hooks/useTheme";
 import { useReveal } from "@/hooks/useReveal";
 
 const SKILLS = {
-  Frontend: ["React", "Next.js", "TypeScript", "JavaScript (ES6+)", "HTML5 & CSS3"],
-  Styling: ["Tailwind CSS", "Responsive Design", "UI / UX basics"],
-  Tooling: ["Git & GitHub", "Vercel", "REST APIs", "Vite"],
+  "Languages & Core": [
+    "JavaScript (ES6+)",
+    "TypeScript",
+    "Python",
+    "HTML5",
+    "CSS3",
+    "SQL",
+  ],
+  "Frameworks & Libraries": [
+    "React",
+    "Next.js",
+    "Django",
+    "Node.js",
+    "Tailwind CSS",
+    "Prisma ORM",
+    "Framer Motion",
+  ],
+  "Tools & Platforms": [
+    "Git & GitHub",
+    "Vercel",
+    "PostgreSQL",
+    "REST APIs",
+    "Vite",
+    "Docker basics",
+    "Figma",
+    "VS Code",
+  ],
+  "AI & Modern Workflow": [
+    "Prompt Engineering",
+    "LLM Integration",
+    "AI API Integration",
+    "GitHub Copilot",
+    "Cursor AI",
+    "ChatGPT / Claude",
+    "AI-assisted Development",
+  ],
+  "Design & Soft Skills": [
+    "Responsive Design",
+    "UI/UX Principles",
+    "Agile / Scrum",
+    "Technical Documentation",
+    "Problem Solving",
+    "Code Review",
+  ],
 };
 
 const CALLOUTS = [
-  "☕ Can't start a coding session without coffee first.",
-  "🎧 Builds better with lo-fi beats in the background.",
-  "🏐 Plays basketball to clear the mind between debugging sessions.",
+  "▸ Strong emphasis on clean, maintainable code architecture.",
+  "▸ Experienced with both frontend interfaces and backend logic.",
+  "▸ Proficient with AI-assisted development tools and modern workflows.",
+  "▸ Comfortable working across the full development lifecycle.",
 ];
 
 export default function AboutPage() {
@@ -53,9 +95,9 @@ export default function AboutPage() {
           className="text-[15px] leading-relaxed max-w-lg"
           style={{ color: dark ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.5)" }}
         >
-          I&apos;m a 2nd-year IT student and junior full stack developer who loves
-          building things for the web — from polished frontends to the logic
-          running behind them.
+          Frontend developer and IT student with a focus on building
+          performant, accessible web applications. Experienced with React,
+          Next.js, and full-stack workflows.
         </p>
       </div>
 
@@ -82,10 +124,10 @@ export default function AboutPage() {
         </h2>
         <div className="space-y-3">
           {[
-            "Studying IT at Naga College Foundation",
-            "Building projects with React & Next.js",
-            "Looking for internships and freelance work",
-            "Always learning, always shipping",
+            "Pursuing BS in Information Technology at Naga College Foundation",
+            "Developing full-stack applications with React and Next.js",
+            "Seeking internship and freelance opportunities",
+            "Expanding expertise in backend systems and DevOps",
           ].map((item, i) => (
             <div
               key={i}
@@ -113,7 +155,7 @@ export default function AboutPage() {
           className="text-[11px] font-semibold mb-3 uppercase tracking-wider"
           style={{ color: "var(--accent)", fontFamily: "var(--font-mono)" }}
         >
-          {"// fun facts"}
+          {"// core strengths"}
         </p>
         <div className="space-y-2">
           {CALLOUTS.map((fact, i) => (
@@ -144,26 +186,24 @@ export default function AboutPage() {
           style={{ color: dark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.45)" }}
         >
           <p>
-            I got into web development the way most people do — curiosity. I just
-            wanted to make things. That curiosity turned into a real passion,
-            especially once I realized I could go beyond the frontend and
-            understand the full picture of how an app actually works.
+            Started with web development through self-directed learning and
+            academic coursework. Progressed from basic HTML/CSS to building
+            full-stack applications with modern frameworks.
           </p>
           <p>
-            I&apos;m currently studying Information Technology at Naga College
-            Foundation. Outside of class, I&apos;m building projects, picking up
-            new tools, and slowly connecting the dots between design, frontend,
-            and backend.
+            Currently completing a BS in Information Technology at Naga College
+            Foundation, with coursework in software development, database
+            systems, and network administration.
           </p>
           <p>
-            I&apos;m looking for opportunities where I can contribute, keep
-            growing, and work on things that actually matter — freelance,
-            internships, or collaborations, I&apos;m open to all of it.
+            Open to internships, freelance projects, and collaborative
+            opportunities where I can apply technical skills and continue
+            developing professionally.
           </p>
         </div>
       </div>
 
-      {/* ## Skills */}
+      {/* ## Skills — expanded */}
       <div ref={s4.ref} className={`mb-12 reveal ${s4.isVisible ? "visible" : ""}`}>
         <h2
           className="heading-display mb-6"
@@ -174,11 +214,11 @@ export default function AboutPage() {
         >
           ## Skills
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {Object.entries(SKILLS).map(([category, items]) => (
             <div key={category}>
               <p
-                className="text-[12px] font-semibold mb-3 uppercase tracking-wider"
+                className="text-[11px] font-semibold mb-3 uppercase tracking-wider"
                 style={{ color: "var(--accent)", fontFamily: "var(--font-mono)" }}
               >
                 {category}
@@ -218,7 +258,7 @@ export default function AboutPage() {
           className="text-[13px] mb-4"
           style={{ color: dark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)" }}
         >
-          Want to work together or just say hi?
+          Interested in collaborating or have a question?
         </p>
         <a
           href="/contact"
