@@ -20,11 +20,11 @@ const SKILLS_MARQUEE = [
 
 const SCATTERED_IMAGES = [
   { src: "https://i.imgur.com/Y9RkFD3.jpeg", alt: "Jaymer", w: 180, h: 220, top: "8%", left: "2%", rotate: -4, delay: 0.1 },
-  { src: "https://i.imgur.com/YgJYywb.jpg", alt: "Hiking", w: 140, h: 100, top: "5%", right: "4%", rotate: 3, delay: 0.2 },
-  { src: "https://i.imgur.com/yyY8UfS.jpg", alt: "Nature", w: 120, h: 90, top: "55%", left: "1%", rotate: 2, delay: 0.3 },
-  { src: "https://i.imgur.com/YRbUXNT.jpg", alt: "Trail", w: 130, h: 95, top: "60%", right: "2%", rotate: -3, delay: 0.15 },
-  { src: "https://i.imgur.com/p9Yyg60.jpg", alt: "Outdoors", w: 110, h: 80, bottom: "18%", left: "8%", rotate: 5, delay: 0.25 },
-  { src: "https://i.imgur.com/YG4QvvS.jpg", alt: "Explore", w: 100, h: 75, bottom: "15%", right: "6%", rotate: -2, delay: 0.35 },
+  { src: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=300&fit=crop", alt: "Code Editor", w: 140, h: 100, top: "5%", right: "4%", rotate: 3, delay: 0.2 },
+  { src: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=300&fit=crop", alt: "React", w: 120, h: 90, top: "55%", left: "1%", rotate: 2, delay: 0.3 },
+  { src: "https://images.unsplash.com/photo-1550439062-609e1531270e?w=400&h=300&fit=crop", alt: "Server", w: 130, h: 95, top: "60%", right: "2%", rotate: -3, delay: 0.15 },
+  { src: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=300&fit=crop", alt: "AI", w: 110, h: 80, bottom: "18%", left: "8%", rotate: 5, delay: 0.25 },
+  { src: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop", alt: "Laptop Code", w: 100, h: 75, bottom: "15%", right: "6%", rotate: -2, delay: 0.35 },
 ];
 
 function useTypingEffect(strings: string[], typingSpeed = 80, deletingSpeed = 40, pauseDuration = 2000) {
