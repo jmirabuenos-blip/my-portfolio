@@ -1,19 +1,18 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import ClientLayout from "@/components/ClientLayout";
-import { Cormorant_Garamond, DM_Sans } from "next/font/google";
+import { Bricolage_Grotesque, DM_Sans } from "next/font/google";
 
-const cormorant = Cormorant_Garamond({
+const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  style: ["normal", "italic"],
-  variable: "--font-cormorant",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-bricolage",
   display: "swap",
 });
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
+  weight: ["300", "400", "500", "600"],
   variable: "--font-dm-sans",
   display: "swap",
 });
@@ -44,10 +43,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${cormorant.variable} ${dmSans.variable}`}>
-      <body>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${bricolage.variable} ${dmSans.variable}`}
+    >
+      <body className="scanlines">
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
