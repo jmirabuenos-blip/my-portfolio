@@ -11,6 +11,9 @@ const PROJECTS = [
     url: "https://ncf-enrollment-portal.onrender.com/",
     year: "2026",
     category: "web",
+    image: "/projects/ncf-enrollment-portal.jpg",
+    imageCaption: "ncf-enrollment-portal.jpg",
+    slug: "ncf-enrollment-portal",
   },
   {
     name: "Minimalist E-Commerce Store",
@@ -19,6 +22,9 @@ const PROJECTS = [
     url: "https://ecommerce-portfolio-sooty.vercel.app/",
     year: "2026",
     category: "web",
+    image: "/projects/ecommerce-store.png",
+    imageCaption: "ecommerce-store.png",
+    slug: "ecommerce-store",
   },
   {
     name: "AIVA AI Studio",
@@ -27,14 +33,9 @@ const PROJECTS = [
     url: "https://aiva-weld.vercel.app/",
     year: "2024",
     category: "ai",
-  },
-  {
-    name: "Management App",
-    desc: "Full-stack app with user authentication, dashboard, and position management.",
-    tags: ["React", "Auth", "Full-stack"],
-    url: "https://my-app-w-position.vercel.app/",
-    year: "2024",
-    category: "web",
+    image: "/projects/aiva-ai-studio.jpg",
+    imageCaption: "aiva-ai-studio.jpg",
+    slug: "aiva-ai-studio",
   },
 ];
 
@@ -140,16 +141,14 @@ export default function ProjectsPage() {
 
       {/* Project list — file tree style */}
       <div className="flex flex-col gap-2">
-        {filtered.map((project, i) => {
+        {filtered.map((project) => {
           const isOpen = expanded === project.name;
           return (
             <div
               key={project.name}
               className="rounded-xl overflow-hidden transition-all duration-300"
               style={{
-                background: isOpen
-                  ? "var(--surface)"
-                  : "transparent",
+                background: isOpen ? "var(--surface)" : "transparent",
                 border: `1px solid ${
                   isOpen
                     ? dark
@@ -159,20 +158,23 @@ export default function ProjectsPage() {
                 }`,
               }}
             >
+              {/* ── Row header ── */}
               <button
                 onClick={() => setExpanded(isOpen ? null : project.name)}
                 className="w-full flex items-center gap-3 px-4 py-3.5 text-left transition-all duration-200 group"
-                style={{
-                  background: isOpen ? "transparent" : "transparent",
-                }}
               >
                 {/* Expand arrow */}
                 <span
                   className="text-[12px] transition-transform duration-200"
                   style={{
                     fontFamily: "var(--font-mono)",
-                    color: isOpen ? "var(--accent)" : dark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)",
+                    color: isOpen
+                      ? "var(--accent)"
+                      : dark
+                      ? "rgba(255,255,255,0.2)"
+                      : "rgba(0,0,0,0.2)",
                     transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
+                    display: "inline-block",
                   }}
                 >
                   {"▶"}
@@ -181,9 +183,7 @@ export default function ProjectsPage() {
                 {/* Project name */}
                 <span
                   className="text-[14px] font-semibold flex-1"
-                  style={{
-                    color: dark ? "#fafafa" : "#0a0a0a",
-                  }}
+                  style={{ color: dark ? "#fafafa" : "#0a0a0a" }}
                 >
                   {project.name}
                 </span>
@@ -196,8 +196,12 @@ export default function ProjectsPage() {
                       className="px-2 py-0.5 rounded text-[10px]"
                       style={{
                         fontFamily: "var(--font-mono)",
-                        color: dark ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.25)",
-                        background: dark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.03)",
+                        color: dark
+                          ? "rgba(255,255,255,0.25)"
+                          : "rgba(0,0,0,0.25)",
+                        background: dark
+                          ? "rgba(255,255,255,0.03)"
+                          : "rgba(0,0,0,0.03)",
                       }}
                     >
                       {t}
@@ -217,22 +221,96 @@ export default function ProjectsPage() {
                 </span>
               </button>
 
-              {/* Expanded content */}
+              {/* ── Expanded content ── */}
               <div
                 className="overflow-hidden transition-all duration-300"
                 style={{
-                  maxHeight: isOpen ? "200px" : "0",
+                  maxHeight: isOpen ? "600px" : "0",
                   opacity: isOpen ? 1 : 0,
                 }}
               >
-                <div className="px-4 pb-4 pl-10">
+                <div className="px-4 pb-5 pl-10 flex flex-col gap-4">
+
+                  {/* Preview image — terminal-styled */}
+                  <div>
+                    {/* monospace file path label above */}
+                    <p
+                      className="text-[10px] mb-1.5 uppercase tracking-wider"
+                      style={{
+                        fontFamily: "var(--font-mono)",
+                        color: dark
+                          ? "rgba(255,255,255,0.2)"
+                          : "rgba(0,0,0,0.2)",
+                      }}
+                    >
+                      <span style={{ color: "var(--accent)" }}>{">"}</span>{" "}
+                      {project.imageCaption}
+                    </p>
+
+                    {/* Image — sharp corners, scan-line tint to match aesthetic */}
+                    <div
+                      className="relative w-full overflow-hidden"
+                      style={{
+                        borderRadius: "6px",
+                        border: `1px solid ${
+                          dark
+                            ? "rgba(255,255,255,0.07)"
+                            : "rgba(0,0,0,0.07)"
+                        }`,
+                        maxHeight: "220px",
+                      }}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={project.image}
+                        alt={`${project.name} preview`}
+                        className="w-full object-cover object-top"
+                        style={{
+                          maxHeight: "220px",
+                          filter: dark
+                            ? "saturate(0.8) brightness(0.85) contrast(1.05)"
+                            : "saturate(0.9) contrast(1.02)",
+                          display: "block",
+                        }}
+                      />
+                      {/* Subtle scan-line overlay */}
+                      <div
+                        className="absolute inset-0 pointer-events-none"
+                        style={{
+                          background:
+                            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px)",
+                        }}
+                      />
+                      {/* Corner accent */}
+                      <div
+                        className="absolute top-0 right-0 px-2 py-0.5"
+                        style={{
+                          fontFamily: "var(--font-mono)",
+                          fontSize: 9,
+                          color: "var(--accent)",
+                          background: "var(--accent-dim)",
+                          letterSpacing: "0.08em",
+                        }}
+                      >
+                        PREVIEW
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Description */}
                   <p
-                    className="text-[13px] leading-relaxed mb-3"
-                    style={{ color: dark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.45)" }}
+                    className="text-[13px] leading-relaxed"
+                    style={{
+                      color: dark
+                        ? "rgba(255,255,255,0.45)"
+                        : "rgba(0,0,0,0.45)",
+                    }}
                   >
                     {project.desc}
                   </p>
-                  <div className="flex items-center justify-between">
+
+                  {/* Tags + link row */}
+                  <div className="flex items-center justify-between flex-wrap gap-2">
                     <div className="flex gap-1.5 flex-wrap">
                       {project.tags.map((t) => (
                         <span
@@ -252,16 +330,27 @@ export default function ProjectsPage() {
                       href={project.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-[12px] font-medium transition-all duration-200 hover:opacity-100 ml-3 flex-shrink-0"
+                      className="flex items-center gap-1.5 text-[12px] font-medium transition-all duration-200 hover:opacity-100 flex-shrink-0"
                       style={{
                         fontFamily: "var(--font-mono)",
-                        color: dark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)",
+                        color: dark
+                          ? "rgba(255,255,255,0.4)"
+                          : "rgba(0,0,0,0.4)",
                         opacity: 0.7,
                       }}
                       onClick={(e) => e.stopPropagation()}
                     >
                       run
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                         <polyline points="15 3 21 3 21 9" />
                         <line x1="10" y1="14" x2="21" y2="3" />
